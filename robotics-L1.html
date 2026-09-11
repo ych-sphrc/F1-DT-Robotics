@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>設計與科技｜自動化與機械人（第一堂）</title>
+<script>
+/* 圖片找不到時，自動變成提示框（此函數必須放在 body 之前） */
+function imgFail(el,code,hint){
+  var p=el.getAttribute('src'),d=document.createElement('div');
+  d.className='ph'+(el.dataset.small?' small':'');
+  d.innerHTML='<span class="ico">📷</span><b>圖片未找到：'+code+'</b><span>'+hint+'</span><code>'+p+'</code>';
+  el.parentNode.replaceChild(d,el);
+}
+</script>
+<style>
+:root{--blue:#1e6fd9;--blue-d:#14509e;--bg:#f4f7fb;--card:#fff;--line:#dde5ef;--txt:#22303f;--muted:#6b7a8c;
+--green:#1f9d55;--green-bg:#e6f7ee;--red:#d63a3a;--red-bg:#fdeaea;--yellow:#fff8e1;--orange:#e08600}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.75;font-size:17px}
+header{background:linear-gradient(135deg,#1e6fd9,#0f3b78);color:#fff;padding:26px 20px 22px}
+header .wrap{max-width:980px;margin:auto}
+header h1{margin:0 0 6px;font-size:1.7rem}
+header p{margin:0;opacity:.9;font-size:.95rem}
+main{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:18px 0}
+nav.toc b{display:block;margin-bottom:6px}
+nav.toc a{display:inline-block;margin:4px 10px 4px 0;color:var(--blue-d);text-decoration:none;font-size:.95rem}
+nav.toc a:hover{text-decoration:underline}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:22px;box-shadow:0 1px 3px rgba(20,40,70,.05)}
+h2{font-size:1.28rem;margin:0 0 14px;padding-bottom:10px;border-bottom:3px solid var(--blue);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+h2 .no{background:var(--blue);color:#fff;border-radius:8px;padding:2px 10px;font-size:.95rem}
+h2 .mk{margin-left:auto;font-size:.8rem;background:#eef4fc;color:var(--blue-d);border:1px solid #bcd8ff;border-radius:20px;padding:2px 10px}
+h3{font-size:1.08rem;margin:22px 0 8px;color:var(--blue-d)}
+h4{margin:0 0 8px;font-size:1rem}
+.box{border-left:5px solid var(--blue);background:#eef4fc;padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0}
+.tip{border-left:5px solid var(--orange);background:var(--yellow);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:.95rem}
+.def{background:#eaf3ff;border:2px solid #bcd8ff;border-radius:12px;padding:16px 18px;font-size:1.05rem}
+.def em{color:var(--blue-d);font-style:normal;font-weight:700;background:#fff3bf;padding:0 3px;border-radius:3px}
+ul,ol{padding-left:22px} li{margin:5px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:#eef4fc;color:var(--blue-d)}
+tbody tr:nth-child(even){background:#fafcff}
+.ph{border:2px dashed #a9b8cc;background:#f7f9fc;border-radius:12px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#7b8a9c;font-size:.88rem;padding:16px;gap:4px;margin:10px 0}
+.ph .ico{font-size:1.7rem}
+.ph code{background:#e8edf4;padding:1px 6px;border-radius:5px;color:#3d5a80;font-size:.85rem}
+.ph.small{min-height:110px}
+img.fig{max-width:100%;border-radius:12px;display:block;margin:10px 0;border:1px solid var(--line)}
+.figcap{font-size:.85rem;color:var(--muted);margin:-2px 0 12px}
+.vwrap{position:relative;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;background:#000;margin:10px 0}
+.vwrap iframe,.vwrap video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.verr{background:var(--red-bg);border:1px solid #f2c4c4;border-radius:12px;padding:14px 16px;font-size:.9rem;color:#8f2020}
+button{font-family:inherit;font-size:.95rem;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:#fff;padding:8px 14px;transition:.15s}
+button:hover{background:#f0f5fc}
+.btn-main{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.btn-main:hover{background:var(--blue-d)}
+.btn-ghost{background:#fff;color:var(--blue-d);border-color:#bcd8ff}
+.btn-go{background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
+.btn-sm{padding:4px 9px;font-size:.82rem}
+#chipPool,#chipAns{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border-radius:12px}
+#chipPool{background:#f2f5f9;border:1px solid var(--line)}
+#chipAns{background:#fffdf2;border:2px dashed #e3c96b}
+.chip{background:#fff;border:1px solid #c9d6e6;border-radius:20px;padding:6px 14px;cursor:pointer;font-size:.95rem;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.chip:hover{background:#eaf2ff;border-color:var(--blue)}
+.chip.in{background:#eaf2ff;border-color:var(--blue)}
+ol.zh{background:#f6fbff;border:1px solid #cfe3f8;border-radius:12px;padding:12px 12px 12px 34px;margin:10px 0}
+ol.zh li{margin:8px 0}
+ol.zh .zhtxt{cursor:pointer;border-bottom:1px dotted #7aa9dd}
+ol.zh .zhtxt:hover{background:#fff3bf}
+ol.zh .en{display:none;margin-left:8px;color:#12673a;background:#e6f7ee;border:1px solid #bfe5cf;border-radius:8px;padding:1px 8px;font-size:.9rem}
+ol.zh .en.show{display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px;margin-top:12px}
+.rcard{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.rcard .ph{min-height:120px;margin:0 0 10px}
+.rcard img{width:100%;height:145px;object-fit:cover;border-radius:10px;margin-bottom:10px;background:#eef2f7}
+.rcard h4{font-size:.98rem;margin:0 0 2px}
+.rcard .en{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.rbtns{display:flex;gap:8px}
+.rbtns button{flex:1;padding:7px 4px;font-size:.88rem}
+.fb{margin-top:9px;font-size:.88rem;padding:9px 11px;border-radius:9px;display:none}
+.fb.ok{display:block;background:var(--green-bg);color:#12673a;border:1px solid #bfe5cf}
+.fb.no{display:block;background:var(--red-bg);color:#9b2222;border:1px solid #f2c4c4}
+.sel{padding:7px 9px;border-radius:8px;border:1px solid var(--line);font-family:inherit;font-size:.92rem;width:100%;max-width:430px}
+.res{font-weight:700;padding:10px 14px;border-radius:10px;margin-top:12px;display:none}
+.res.show{display:block;background:#eef4fc;border:1px solid #bcd8ff;color:var(--blue-d)}
+.ipo{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:14px 0}
+.ipo>div{border-radius:14px;padding:14px}
+.i1{background:#e8f4ff;border:2px solid #9ecbf5}
+.i2{background:#fff1e0;border:2px solid #f3c489}
+.i3{background:#e9f8ee;border:2px solid #a5ddba}
+.ipo h4{font-size:1rem;margin-bottom:6px}
+.ipo ul{padding-left:18px;margin:6px 0 0;font-size:.9rem}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:13px;margin-top:12px}
+.pcard{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;text-align:center}
+.pcard svg{width:100%;max-width:150px;height:92px;display:block;margin:0 auto 8px}
+.pcard b{font-size:.95rem;display:block}
+.pcard .en{font-size:.78rem;color:var(--muted)}
+.pcard .use{font-size:.83rem;color:#4a5a6b;margin:6px 0 8px;min-height:38px}
+.stg{font-size:.82rem;font-weight:700;border-radius:20px;padding:3px 12px;display:inline-block}
+.stg.in{background:#e8f4ff;color:#14509e;border:1px solid #9ecbf5}
+.stg.pr{background:#fff1e0;color:#9a5b00;border:1px solid #f3c489}
+.stg.ou{background:#e9f8ee;color:#12673a;border:1px solid #a5ddba}
+.qrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding:9px 0}
+.qrow svg{width:56px;height:38px;flex:none}
+.qrow .q{flex:1 1 180px;font-size:.95rem}
+.qrow .opts{display:flex;gap:6px}
+.qrow .opts button{padding:5px 10px;font-size:.85rem}
+.qrow.done .opts button{opacity:.45;pointer-events:none}
+.tag{font-size:.8rem;padding:2px 8px;border-radius:20px;font-weight:700}
+.tag.ok{background:var(--green-bg);color:#12673a}
+.tag.no{background:var(--red-bg);color:#9b2222}
+.step{border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:0 12px 12px 0;padding:14px 18px;margin:14px 0;background:#fff}
+.step h4{color:var(--blue-d);font-size:1.02rem}
+.stepno{display:inline-block;background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85rem;margin-right:8px;font-weight:700}
+pre{background:#1e2933;color:#e6edf3;padding:14px 16px;border-radius:12px;overflow-x:auto;font-size:.86rem;line-height:1.6}
+pre .c{color:#8fbf8f} pre .k{color:#ffd479} pre .m{color:#8fd3ff}
+code.inline{background:#eef2f7;padding:1px 6px;border-radius:5px;font-size:.9em;color:#2b4a6f;word-break:break-all}
+.calc{background:#f7fbff;border:1px solid #bcd8ff;border-radius:12px;padding:14px;margin:12px 0}
+.calc label{display:block;font-size:.9rem;margin:8px 0 2px}
+.calc input{width:130px;padding:6px 9px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.calc .out{margin-top:12px;font-weight:700;color:var(--blue-d);font-size:1.02rem}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;gap:9px;align-items:flex-start;margin:7px 0}
+.chk input{margin-top:6px;transform:scale(1.2)}
+table.fill input{width:100%;border:1px solid #9fc0e0;border-radius:7px;padding:7px 8px;font-family:inherit;font-size:.92rem;background:#fffdf0}
+table.fill input:focus{outline:2px solid #4a9ad4;background:#fff}
+table.fill tr.eg{background:#eef7ff}
+table.fill tr.eg td{color:#14509e;font-size:.9rem}
+.ta{width:100%;min-height:78px;padding:10px;border:1px solid #9fc0e0;border-radius:10px;font-family:inherit;font-size:.95rem;background:#fffdf0;resize:vertical}
+.model{display:none;background:#f2fbf5;border:1px solid #b9e3c8;border-radius:12px;padding:14px 16px;margin-top:10px;font-size:.94rem}
+.model.show{display:block}
+#topbar{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--line);padding:8px 16px}
+#topbar .in{max-width:980px;margin:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+#bar{flex:1 1 130px;height:9px;background:#e6ecf4;border-radius:6px;overflow:hidden;min-width:100px}
+#bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4da3ff,#1e6fd9);transition:.4s}
+.scorepill{background:#14509e;color:#fff;font-weight:700;border-radius:20px;padding:3px 12px;font-size:.9rem}
+.idbox{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.idbox label{display:block;font-size:.88rem;color:var(--muted);margin-bottom:3px}
+.idbox input{width:100%;padding:9px 10px;border:1px solid #9fc0e0;border-radius:10px;font-family:inherit;font-size:1rem;background:#fffdf0}
+.warn{background:var(--red-bg);border:1px solid #f2c4c4;color:#8f2020;border-radius:10px;padding:10px 14px;font-size:.92rem;margin-top:10px}
+.pname{background:#1e2933;color:#8fd3ff;border-radius:8px;padding:3px 10px;font-weight:700;letter-spacing:.5px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:22px}
+.teacher{background:#fff6f6;border:2px dashed #e0a0a0}
+.teacher h2{border-bottom-color:#c94b4b} .teacher h2 .no{background:#c94b4b}
+@media print{#topbar,nav.toc,.teacher,button{display:none!important}section{break-inside:avoid;box-shadow:none}}
+/* ── 程式截圖：自動縮小 + 點擊放大 ── */
+.shotwrap{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;margin:12px 0}
+img.shot{max-width:100%;max-height:380px;width:auto;height:auto;border:1px solid #dfe6ef;border-radius:8px;background:#fff;display:inline-block;cursor:zoom-in}
+.shotwrap .zoom{font-size:.8rem;color:var(--muted);margin-top:6px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:200;padding:18px;cursor:zoom-out}
+#lb img{max-width:96%;max-height:90%;border-radius:8px;background:#fff}
+#lb .cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#fff;font-size:.85rem}
+/* ── 轉彎表：下拉選單 + 橫向捲動 ── */
+.tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tblscroll table{min-width:720px}
+table.fill select{width:100%;padding:6px 5px;border:1px solid #9fc0e0;border-radius:7px;font-family:inherit;font-size:.9rem;background:#fffdf0}
+table.fill select:focus{outline:2px solid #4a9ad4;background:#fff}
+table.fill input:disabled{background:#eef1f5;color:#9aa7b5}
+table.fill td.t-next{font-size:.9rem;background:#f6fbff}
+</style>
+</head>
+<body>
+
+<div id="topbar"><div class="in">
+  <span id="whoami">未填寫姓名</span>
+  <span id="bar"><i></i></span><span id="pct">0%</span>
+  <span class="scorepill" id="scorePill">0 / 45 分</span>
+  <button class="btn-ghost btn-sm" onclick="location.hash='#s8'">前往交功課</button>
+  <button class="btn-ghost btn-sm" onclick="resetAll()">重設</button>
+</div></div>
+
+<header><div class="wrap">
+  <h1>🤖 自動化與機械人（Automation &amp; Robotics）</h1>
+  <p>中一設計與科技科｜第一堂：認識機械人・輸入處理輸出・麥昆 Plus V2 小車編程｜總分 45 分</p>
+</div></header>
+
+<main>
+
+<!-- ============ 0 學生資料 ============ -->
+<section id="s0">
+  <h2><span class="no">0</span>學生資料（必填）</h2>
+  <p>請先填寫以下資料，否則最後<strong>不能輸出功課檔案</strong>。你的答案會自動儲存在這部電腦的瀏覽器內。</p>
+  <div class="idbox">
+    <div><label>班別（例：1A）</label><input id="f_cls" placeholder="1A"></div>
+    <div><label>學號</label><input id="f_num" placeholder="12"></div>
+    <div><label>姓名</label><input id="f_name" placeholder="陳大文"></div>
+    <div><label>日期</label><input id="f_date" type="date"></div>
+  </div>
+  <div id="idWarn" class="warn">⚠️ 尚未填妥班別、學號及姓名。</div>
+  <p style="margin-top:12px">📁 稍後 MakeCode 專案要用的名稱：<span class="pname" id="projName">班別_學號_square</span></p>
+  <div class="tip">📋 <strong>本課評分（共 45 分）</strong>：句子重組 5 ＋ 判斷機械人 9 ＋ 用途配對 5 ＋ 影片討論 4 ＋ 部件分類 10 ＋ 直線量度記錄 3 ＋ 轉彎實驗記錄 3 ＋ 實作檢查表 6。<br>
+  客觀題<strong>以第一次作答為準</strong>，之後可以再試，是為了學習。</div>
+</section>
+
+<nav class="toc"><b>📚 本課內容</b>
+  <a href="#s0">0. 學生資料</a><a href="#s1">1. 什麼是機械人？</a><a href="#s2">2. 是否機械人？</a>
+  <a href="#s3">3. 用途配對</a><a href="#s4">4. 影片與討論</a><a href="#s5">5. 輸入→處理→輸出</a>
+  <a href="#s6">6. 實作任務</a><a href="#s7">總結・詞彙</a><a href="#s8">🎁 輸出功課</a>
+</nav>
+
+<!-- ============ 1 ============ -->
+<section id="s1">
+  <h2><span class="no">1</span>什麼是機械人？<span class="mk">5 分</span></h2>
+
+  <div class="def">
+    <p style="margin:0 0 6px"><strong>機械人的定義</strong></p>
+    機械人通常是能夠<em>感知環境</em>，然後依照<em>程式或控制</em>作出<em>決定</em>，從而<em>執行指定動作</em>的系統。
+  </div>
+
+  <div class="box"><strong>拆解定義中的 4 個關鍵字：</strong>
+    <ul style="margin:6px 0 0">
+      <li><strong>感知（Sense）</strong>——用感測器「知道」周圍發生什麼事</li>
+      <li><strong>程式（Program）</strong>——事先寫好的一連串指令</li>
+      <li><strong>決定（Decide）</strong>——根據感知到的資料選擇下一步做什麼</li>
+      <li><strong>動作（Act）</strong>——真的動起來（移動、轉動、發聲、發光……）</li>
+    </ul>
+  </div>
+
+  <img class="fig" data-small="1" src="images/p1-definition.png" alt="感知→決定→動作循環圖"
+       onerror="imgFail(this,'P1','建議：「感知 → 決定 → 動作」循環示意圖')">
+  <p class="figcap">圖 1：機械人的「感知 → 決定 → 動作」循環</p>
+
+  <h3>🧩 練習 1：把英文定義重組（5 分）</h3>
+  <p>下面是<strong>中文定義的 5 個部分</strong>（次序正確）。請對照它們，把打亂的英文詞組排成完整句子。<br>
+     <span style="font-size:.92rem;color:var(--muted)">卡住的話，可按 💡 或直接按該句中文，會顯示對應英文（提示不扣分，但會記錄）。</span></p>
+
+  <ol class="zh" id="zhList"></ol>
+
+  <p><b>你的答案：</b></p><div id="chipAns"></div>
+  <p style="margin-top:10px"><b>可選英文詞組：</b></p><div id="chipPool"></div>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn-main" onclick="checkSentence()">檢查答案</button>
+    <button onclick="buildSentence()">重新排列</button>
+    <button class="btn-ghost" onclick="showSentence()">顯示答案（0 分）</button>
+  </div>
+  <div id="sentRes" class="res"></div>
+  <div class="tip" style="margin-top:14px">📝 <strong>詞彙：</strong>robot 機械人｜sense 感知｜environment 環境｜decision 決定｜program 程式｜action 動作｜system 系統</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="s2">
+  <h2><span class="no">2</span>機械人的例子：是？不是？<span class="mk">9 分</span></h2>
+  <p>用第 1 節的定義判斷以下 9 件物品。問自己兩條問題：<strong>「它會感知嗎？」「它會自己決定嗎？」</strong></p>
+  <div id="robotGrid" class="grid"></div>
+  <div id="robotRes" class="res"></div>
+  <div class="box" style="margin-top:16px"><strong>總結重點：</strong>
+    <ul style="margin:6px 0 0">
+      <li>會動 ≠ 機械人。<strong>風扇</strong>只重複同一動作，不感知、不決定。</li>
+      <li>由人即時操控的<strong>遙控車</strong>和<strong>夾公仔機</strong>，「大腦」是人 → 屬人手操控機械。</li>
+      <li>不像人形也可以是機械人：<strong>升降機、自動門</strong>有感測器＋控制器＋馬達，是典型<strong>自動化系統</strong>。</li>
+      <li><strong>高達模型</strong>外形最似機械人，卻完全沒有感測器和控制器——樣子不是重點，<u>會不會感知和決定</u>才是重點。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="s3">
+  <h2><span class="no">3</span>配對：機械人的用途與功能<span class="mk">5 分</span></h2>
+  <p>為每部<strong>真正的機械人</strong>選出最合適的用途／功能。</p>
+  <table><thead><tr><th style="width:32%">機械人</th><th>用途／功能</th><th style="width:64px">結果</th></tr></thead>
+    <tbody id="matchBody"></tbody></table>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn-main" onclick="checkMatch()">檢查答案</button>
+    <button onclick="resetMatch()">清除重排</button>
+  </div>
+  <div id="matchRes" class="res"></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="s4">
+  <h2><span class="no">4</span>影片：世界人形機械人運動會<span class="mk">4 分</span></h2>
+  <p>2026 年 8 月，<strong>第二屆世界人形機械人運動會</strong>在北京「冰絲帶」國家速滑館舉行，超過 <strong>2000 台機械人、666 支隊伍、51 個項目</strong>參賽。</p>
+
+  <h3>🎬 影片一：搞笑片段剪輯（機械人也會「失手」）</h3>
+  <div id="video1"></div>
+  <p style="font-size:.95rem"><b>邊看邊想：</b>為什麼機械人「行路」這麼困難？它要感知什麼資料才能保持平衡？</p>
+
+  <h3>🎬 影片二：最震撼的精彩瞬間</h3>
+  <div id="video2"></div>
+  <p style="font-size:.95rem"><b>邊看邊想：</b>這些動作背後，機械人要靠哪些<strong>感測器</strong>？哪些<strong>驅動器</strong>？</p>
+
+  <div class="box"><strong>驚人數字（2026 年第二屆）</strong>
+    <table style="margin-top:8px"><thead><tr><th>項目</th><th>成績</th><th>比較</th></tr></thead>
+      <tbody>
+        <tr><td>100 米（天工 Tien Kung Ultra）</td><td>約 9.3–9.4 秒</td><td>快過人類世界紀錄 9.58 秒 🤯</td></tr>
+        <tr><td>2025 年第一屆同項目最佳</td><td>21.50 秒</td><td>一年內進步超過一倍</td></tr>
+      </tbody></table>
+    <p style="margin:8px 0 0;font-size:.92rem">但機械人衝線後仍常失去平衡撞向護墊——<strong>「跑得快」和「跑得穩」是兩回事。</strong></p>
+  </div>
+
+  <h3>✍️ 觀後討論（每題 2 分，需寫 15 字以上）</h3>
+  <p><b>Q1　你認為機械人在運動會上比賽，對真實生活有什麼用？</b></p>
+  <textarea class="ta" id="d1" placeholder="寫下你的想法（至少 15 字）……"></textarea>
+  <p style="margin-top:14px"><b>Q2　如果人形機械人進入工廠、酒店、醫院或家庭，會帶來什麼好處和問題？</b></p>
+  <textarea class="ta" id="d2" placeholder="好處……／問題……"></textarea>
+  <div style="margin-top:12px"><button class="btn-ghost" onclick="showModel()">💡 我寫好了，顯示參考答案</button></div>
+
+  <div class="model" id="modelAns">
+    <b>Q1 參考答案（不用完全一樣，有理據就得分）</b>
+    <ul>
+      <li><b>是最嚴苛的測試場：</b>跑、跳、跌倒後起身，全部考驗平衡控制、感測反應和即時決策——這些正是將來救災、工廠、照顧長者所需的能力。</li>
+      <li><b>加快技術進步：</b>公開比賽令各團隊互相比較和學習，一年之間 100 米由 21.5 秒進步到約 9.3 秒。</li>
+      <li><b>測試可靠度：</b>比賽要連續運作，可測出電池續航、關節耐用度、跌倒保護等真實問題。</li>
+      <li><b>吸引投資與人才：</b>更多人研發 → 零件成本下降 → 將來機械人更便宜、更普及。</li>
+      <li><b>公眾教育：</b>讓大家看清機械人真實水平和限制，不會過度神化或過度恐懼。</li>
+    </ul>
+    <b>Q2 參考答案</b>
+    <table style="margin-top:6px"><thead><tr><th style="width:50%">好處</th><th>問題／隱憂</th></tr></thead>
+      <tbody><tr>
+        <td><ul style="margin:0;padding-left:18px">
+          <li>代替危險工作（火場、化學品、高溫）</li>
+          <li>代替重複、辛苦的工作，減少工傷</li>
+          <li>可 24 小時工作，品質穩定</li>
+          <li>應付人口老化、人手短缺</li>
+          <li>醫院送藥送餐，減少交叉感染</li>
+          <li>陪伴及提醒長者服藥</li></ul></td>
+        <td><ul style="margin:0;padding-left:18px">
+          <li>部分工人失業，需要轉型再培訓</li>
+          <li>購買及維修保養費用高昂</li>
+          <li>私隱問題：鏡頭、麥克風收集資料</li>
+          <li>安全問題：碰撞、跌倒可能傷人</li>
+          <li>程式出錯時，責任由誰承擔？</li>
+          <li>過度依賴機械，人際接觸減少</li>
+          <li>耗電及電子廢物，環保壓力</li></ul></td>
+      </tr></tbody></table>
+    <p style="margin:8px 0 0"><b>老師總結：</b>科技本身沒有好壞，關鍵在於<u>人怎樣設計和使用</u>它——這就是設計與科技科要學的「設計思維」。</p>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="s5">
+  <h2><span class="no">5</span>機械人的運作方式：輸入 → 處理 → 輸出<span class="mk">10 分</span></h2>
+  <p>所有機械人（其實所有電子系統）都可以用這「三步曲」拆解：</p>
+
+  <div class="ipo">
+    <div class="i1"><h4>👁️ ① 輸入 Input</h4>
+      <p style="margin:0;font-size:.92rem">用<strong>感測器（Sensor）</strong>收集環境資料</p>
+      <ul><li>超聲波／矩陣激光測距</li><li>循線感測器</li><li>按鈕／開關</li><li>攝影機、麥克風</li></ul></div>
+    <div class="i2"><h4>🧠 ② 處理 Process</h4>
+      <p style="margin:0;font-size:.92rem">用<strong>控制器（Controller）</strong>依<strong>程式</strong>作決定</p>
+      <ul><li>micro:bit 微控制器</li><li>你寫的程式</li><li>例：「若距離 &lt; 10cm 就轉彎」</li></ul></div>
+    <div class="i3"><h4>⚙️ ③ 輸出 Output</h4>
+      <p style="margin:0;font-size:.92rem">用<strong>驅動器（Actuator）</strong>做出動作</p>
+      <ul><li>馬達 + 車輪</li><li>伺服馬達</li><li>LED、蜂鳴器</li></ul></div>
+  </div>
+
+  <h3>🔍 部件圖鑑（按「翻開」看它屬於哪一階段）</h3>
+  <div id="partGrid" class="pgrid"></div>
+
+  <h3>例子一：自動掃地機械人</h3>
+  <table><thead><tr><th style="width:20%">階段</th><th>部件</th><th>做什麼</th></tr></thead>
+    <tbody>
+      <tr><td><b>輸入</b></td><td>紅外線／碰撞感測器、防跌感測器、塵埃感測器</td><td>偵測前方有牆、有樓梯、地面很污</td></tr>
+      <tr><td><b>處理</b></td><td>內部晶片 + 程式</td><td>決定：轉左？後退？加大吸力？</td></tr>
+      <tr><td><b>輸出</b></td><td>車輪馬達、吸塵馬達、掃刷、提示聲</td><td>轉向避開障礙物，同時吸塵</td></tr>
+    </tbody></table>
+
+  <h3>例子二：自動門</h3>
+  <table><thead><tr><th style="width:20%">階段</th><th>部件與工作</th></tr></thead>
+    <tbody>
+      <tr><td><b>輸入</b></td><td>紅外線／微波感測器偵測有人接近</td></tr>
+      <tr><td><b>處理</b></td><td>控制電路：有人 → 開門；5 秒無人 → 關門</td></tr>
+      <tr><td><b>輸出</b></td><td>電動馬達拉動門扇</td></tr>
+    </tbody></table>
+
+  <h3>🧩 練習 3：這個部件屬於哪一階段？（每題 1 分，共 10 分）</h3>
+  <div id="ipoQuiz"></div>
+  <div id="ipoRes" class="res"></div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="s6">
+  <h2><span class="no">6</span>實作任務：令麥昆小車走一個正方形<span class="mk">12 分</span></h2>
+
+  <div class="box"><strong>🎯 任務要求</strong>
+    <ul style="margin:6px 0 0">
+      <li>用 <strong>MakeCode 積木式編程</strong>，令麥昆 Plus 小車沿<strong>一格地磚</strong>走出一個<strong>正方形</strong>。</li>
+      <li>起點與終點大致相同，車頭方向回到原方向（共轉 4 次 90°）。</li>
+      <li>用 <strong>「當啟動時」</strong>：開電源（或按 micro:bit 背面 <b>reset</b> 鍵）就開始行走。</li>
+    </ul></div>
+
+  <h3>器材清單</h3>
+  <ul>
+    <li>麥昆 Plus 小車 × 1、micro:bit × 1、USB 線 × 1、電池 × 1 組</li>
+    <li>電腦（Chrome／Edge）、間尺或軟尺、粉筆或紙膠帶</li>
+  </ul>
+
+  <img class="fig" src="images/p3-maqueen.png" alt="麥昆 Plus 小車各部分"
+       onerror="imgFail(this,'P3','建議：麥昆 Plus 小車實物照，標示 micro:bit、左右馬達、電源開關、USB 插口')">
+  <p class="figcap">圖 3：麥昆 Plus 小車各部分</p>
+
+  <div class="step"><h4><span class="stepno">1</span>開啟編程平台，建立新專案</h4>
+    <ol><li>用 Chrome 開啟 <code class="inline">makecode.microbit.org</code></li>
+      <li>按 <strong>「新專案 New Project」</strong></li>
+      <li>專案名稱：<span class="pname" id="projName2">班別_學號_square</span>（例如 <code class="inline">1A_12_square</code>）</li></ol></div>
+
+  <div class="step"><h4><span class="stepno">2</span>加入麥昆 Plus 擴展</h4>
+    <p style="margin:0 0 6px">小車的馬達積木不是內建的，要先加擴展：</p>
+    <ol>
+      <li>在<strong>中間的指令群</strong>（積木清單）按最下面的 <strong>「擴展 Extensions」</strong></li>
+      <li>把以下連結<strong>整條貼上</strong>搜尋欄，然後按 Enter：<br>
+        <code class="inline">https://github.com/DFRobot/pxt-DFRobot_MaqueenPlus_v20</code></li>
+      <li>在結果中選擇 <strong>maqueenPlusV2</strong></li>
+      <li>成功後，指令群會多出 3 組積木：<strong>IR</strong>、<strong>矩陣激光測距</strong>、<strong>麥昆Plus V2&amp;V3</strong></li>
+    </ol>
+    <img class="fig" data-small="1" src="images/p4-extension.png" alt="加入 maqueenPlusV2 擴展"
+         onerror="imgFail(this,'P4','建議：指令群 →「擴展」→ 貼上連結 → 選 maqueenPlusV2 的截圖')">
+    <p class="figcap">圖 4：加入 maqueenPlusV2 擴展</p></div>
+
+  <div class="step"><h4><span class="stepno">3</span>認識今次要用的積木</h4>
+    <table><thead><tr><th style="width:44%">積木</th><th style="width:26%">在哪個指令群</th><th>作用</th></tr></thead>
+      <tbody>
+        <tr><td><b>當啟動時</b></td><td>基本 Basic</td><td>開機／重設後執行一次，程式由這裡開始</td></tr>
+        <tr><td><b>重複無限次</b></td><td>基本 Basic</td><td>裡面的指令不停重複（今次正方形<u>不放</u>在這裡）</td></tr>
+        <tr><td><b>暫停 (ms) 100</b></td><td>基本 Basic</td><td>維持上一個動作多少毫秒（1000ms = 1 秒）</td></tr>
+        <tr><td><b>重複 4 次　執行</b></td><td>迴圈 Loops</td><td>同一組動作做 4 次（正方形有 4 條邊）</td></tr>
+        <tr><td><b>初始化麥昆PLUS</b></td><td>麥昆Plus V2&amp;V3</td><td><b>每個程式開頭必須加</b>，令 micro:bit 與小車連接</td></tr>
+        <tr><td><b>設置 [全部馬達] 方向 [前進] 速度 [100]</b></td><td>麥昆Plus V2&amp;V3</td><td>控制左／右／全部馬達的方向與速度（0–255）</td></tr>
+        <tr><td><b>設置 [全部馬達] 停止</b></td><td>麥昆Plus V2&amp;V3</td><td>停車</td></tr>
+      </tbody></table>
+    <div class="tip">🔑 <strong>最重要概念：</strong>馬達積木<u>不會自己停</u>！「前進 3 秒」＝<b>設置馬達前進 → 暫停 3000ms → 設置馬達停止</b>，三塊積木一組。</div></div>
+
+  <div class="step"><h4><span class="stepno">4</span>第一步實驗：走直線，量速度（3 分）</h4>
+<pre><span class="c">// 測試程式 A：前進 2 秒</span>
+<span class="k">當啟動時</span>
+    <span class="m">初始化麥昆PLUS</span>
+    <span class="m">設置 [全部馬達] 方向 [前進] 速度 [100]</span>
+    <span class="k">暫停 (ms) 2000</span>
+    <span class="m">設置 [全部馬達] 停止</span></pre>
+<div class="shotwrap">
+      <img class="shot" src="images/p6-code-line.png" alt="測試程式 A：前進 2 秒（積木截圖）"
+           onerror="imgFail(this,'P6','建議：測試程式 A（前進 2 秒後停止）的 MakeCode 積木截圖')">
+      <div class="zoom">圖 6：測試程式 B ─ 原地轉彎測試（🔍 按圖可放大看清楚）</div>
+    </div>
+    <ol><li>用粉筆／紙膠帶標出起點（對準車頭）</li>
+      <li>下載程式（步驟 7），拔 USB，開電源 → 小車立即起步</li>
+      <li>量出小車走了多少 cm</li><li>量一格地磚邊長（多數約 60cm，要自己量！）</li>
+      <li>用下面計算器算出「走一格地磚要幾多毫秒」</li></ol>
+    <div class="calc"><b>⏱️ 直線時間計算器（填好按「計算」即得 3 分）</b>
+      <label>① 測試前進了幾多秒？<input type="number" id="c_t" value="2" step="0.5"> 秒</label>
+      <label>② 量得走了幾多 cm？<input type="number" id="c_d" placeholder="例：40"> cm</label>
+      <label>③ 一格地磚邊長？<input type="number" id="c_tile" value="60"> cm</label>
+      <button class="btn-main" style="margin-top:10px" onclick="calcTime()">計算</button>
+      <div class="out" id="c_out">—</div>
+      <p style="font-size:.85rem;color:var(--muted);margin:6px 0 0">公式：速度 = 距離 ÷ 時間；所需時間 = 地磚邊長 ÷ 速度 × 1000（毫秒）</p></div></div>
+
+  <div class="step"><h4><span class="stepno">5</span>第二步實驗：轉 90°（原地轉彎）（3 分）</h4>
+    <p>要<strong>原地轉</strong>，就要<strong>左側馬達前進、右側馬達後退</strong>（差速轉向 Differential steering）：</p>
+<pre><span class="c">// 測試程式 B：原地向右轉</span>
+<span class="k">當啟動時</span>
+    <span class="m">初始化麥昆PLUS</span>
+    <span class="k">暫停 (ms) 1000</span>      <span class="c">← 給自己時間放好小車、離手</span>
+    <span class="m">設置 [左側馬達] 方向 [前進] 速度 [100]</span>
+    <span class="m">設置 [右側馬達] 方向 [後退] 速度 [100]</span>
+    <span class="k">暫停 (ms) 500</span>       <span class="c">← 這個數字要慢慢試！</span>
+    <span class="m">設置 [全部馬達] 停止</span>
+<div class="shotwrap">
+      <img class="shot" src="images/p7-code-turn.png" alt="測試程式 B：原地向右轉（積木截圖）"
+           onerror="imgFail(this,'P7','建議：測試程式 B（原地向右轉）的 MakeCode 積木截圖')">
+      <div class="zoom">圖 7：測試程式 B ─ 原地轉彎測試（🔍 按圖可放大看清楚）</div>
+    </div>
+</pre>
+   <p>轉 90° 需要幾多毫秒<strong>沒有標準答案</strong>（受電池電量、地板、車輪影響），要靠<strong>試驗與修正（Trial and Error）</strong>。<br>
+       做法：填入你用的<b>暫停時間</b>和<b>實際轉了多少度</b>，再選擇<b>太多／太少</b>並填上<b>預計要調整幾多毫秒</b>，
+       最後一欄會自動算出<b>下次應該試的數字</b>。第一行是示範例子，請在空白格直接輸入，至少記錄 <b>2 次</b>試驗。</p>
+
+    <div class="tblscroll">
+    <table class="fill" id="turnTable">
+      <thead><tr>
+        <th style="width:52px">次數</th>
+        <th style="width:118px">暫停時間 (ms)</th>
+        <th style="width:118px">實際轉了多少度</th>
+        <th style="width:158px">轉得太多／太少？</th>
+        <th style="width:132px">預計調整 (ms)</th>
+        <th style="width:170px">下次試（自動計算）</th>
+        <th style="width:46px">刪除</th>
+      </tr></thead>
+      <tbody id="turnBody">
+        <tr class="eg"><td><b>例</b></td><td>500</td><td>約 70°</td><td>太少（未夠 90°）</td><td>＋50</td><td>下次試 <b>550 ms</b></td><td></td></tr>
+
+        <tr class="trow"><td class="idx">1</td>
+          <td><input class="t-ms" type="number" placeholder="例：600"></td>
+          <td><input class="t-deg" placeholder="例：85°"></td>
+          <td><select class="t-jd">
+            <option value="">— 選擇 —</option>
+            <option value="less">太少（未夠 90°）</option>
+            <option value="more">太多（超過 90°）</option>
+            <option value="ok">剛好 90° ✔</option>
+          </select></td>
+          <td><input class="t-adj" type="number" placeholder="例：50"></td>
+          <td class="t-next">—</td>
+          <td style="text-align:center"><button class="btn-sm t-del" title="刪除此行">✕</button></td></tr>
+
+        <tr class="trow"><td class="idx">2</td>
+          <td><input class="t-ms" type="number"></td>
+          <td><input class="t-deg"></td>
+          <td><select class="t-jd">
+            <option value="">— 選擇 —</option>
+            <option value="less">太少（未夠 90°）</option>
+            <option value="more">太多（超過 90°）</option>
+            <option value="ok">剛好 90° ✔</option>
+          </select></td>
+          <td><input class="t-adj" type="number"></td>
+          <td class="t-next">—</td>
+          <td style="text-align:center"><button class="btn-sm t-del" title="刪除此行">✕</button></td></tr>
+
+        <tr class="trow"><td class="idx">3</td>
+          <td><input class="t-ms" type="number"></td>
+          <td><input class="t-deg"></td>
+          <td><select class="t-jd">
+            <option value="">— 選擇 —</option>
+            <option value="less">太少（未夠 90°）</option>
+            <option value="more">太多（超過 90°）</option>
+            <option value="ok">剛好 90° ✔</option>
+          </select></td>
+          <td><input class="t-adj" type="number"></td>
+          <td class="t-next">—</td>
+          <td style="text-align:center"><button class="btn-sm t-del" title="刪除此行">✕</button></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-go" onclick="addTurnRow()">＋ 新增一行</button>
+      <button onclick="scoreTurn()">儲存記錄</button>
+    </div>
+    <div id="turnRes" class="res"></div>
+    <div class="tip">💡 用地磚的<strong>磚縫</strong>做參考線，車身與磚縫平行時就是準確 90°。每次只加減 50ms，慢慢逼近。</div></div>
+
+  <div class="step"><h4><span class="stepno">6</span>組合成完整程式</h4>
+    <p>正方形 =（直行一邊 + 轉 90°）× 4，所以用<strong>「重複 4 次」</strong>：</p>
+<pre><span class="c">// 完整程式：走正方形</span>
+<span class="k">當啟動時</span>
+    <span class="m">初始化麥昆PLUS</span>
+    <span class="k">暫停 (ms) 1000</span>                <span class="c">// 放好小車、離手</span>
+    <span class="k">重複 4 次</span>
+    <span class="k">執行</span>
+        <span class="c">// —— 直行一邊 ——</span>
+        <span class="m">設置 [全部馬達] 方向 [前進] 速度 [100]</span>
+        <span class="k">暫停 (ms) 3000</span>            <span class="c">← 用步驟 4 算出的數字</span>
+        <span class="m">設置 [全部馬達] 停止</span>
+        <span class="k">暫停 (ms) 300</span>             <span class="c">// 停穩少少，轉彎更準</span>
+        <span class="c">// —— 原地轉 90° ——</span>
+        <span class="m">設置 [左側馬達] 方向 [前進] 速度 [100]</span>
+        <span class="m">設置 [右側馬達] 方向 [後退] 速度 [100]</span>
+        <span class="k">暫停 (ms) 500</span>             <span class="c">← 用步驟 5 試出的數字</span>
+        <span class="m">設置 [全部馬達] 停止</span>
+        <span class="k">暫停 (ms) 300</span>
+    <span class="c">// 迴圈結束，小車回到起點</span>
+<div class="shotwrap">
+      <img class="shot" src="images/p8-code-full.png" alt="完整積木程式（走完正方形路線）"
+           onerror="imgFail(this,'P8','建議：MakeCode 完整積木程式截圖（4 次「前進 + 轉彎」）')">
+      <div class="zoom">圖 7：完整積木程式 ─ 走完整個正方形（🔍 按圖可放大看清楚）</div>
+    </div>
+</pre>
+    <div class="tip">❓ <strong>為什麼不用「重複無限次」？</strong>因為「重複無限次」會一世不停地畫正方形，車會走出課室！本課只要走一次，所以用<strong>「重複 4 次」</strong>，並放在<strong>「當啟動時」</strong>之內。想再走一次？按 micro:bit 背面的 <b>reset</b> 鍵。</div>
+
+
+  <div class="step"><h4><span class="stepno">7</span>下載程式到 micro:bit</h4>
+    <ol><li>USB 線接電腦</li><li>按左下角 <strong>「下載 Download」</strong></li>
+      <li>把 <code class="inline">.hex</code> 拖到 <strong>MICROBIT</strong> 磁碟機（或先「配對裝置」，之後一鍵燒錄）</li>
+      <li>黃燈閃完＝完成</li>
+      <li><b>拔掉 USB</b> → micro:bit 插上小車（LED 面向前）→ 把車放在地磚一角，車頭對正磚縫</li>
+      <li><strong>開電源</strong>，小車在 1 秒後起步；想重試按 micro:bit 背面 <b>reset</b> 鍵</li></ol>
+    <div class="tip">⚠️ <strong>安全：</strong>在地面測試，不要放桌邊；小車行走時同學站開，不要用手擋車輪。</div></div>
+
+  <div class="step"><h4><span class="stepno">8</span>除錯（Debugging）</h4>
+    <table><thead><tr><th style="width:28%">現象</th><th>可能原因</th><th>解決方法</th></tr></thead>
+      <tbody>
+        <tr><td>完全不動</td><td>電源未開／電池弱／micro:bit 未插好</td><td>開電源、換電池、重新插好</td></tr>
+        <tr><td>程式明明下載了卻沒反應</td><td><b>忘記加「初始化麥昆PLUS」</b></td><td>在「當啟動時」第一行加上它</td></tr>
+        <tr><td>只有一邊輪轉</td><td>用了「左側馬達」或「右側馬達」而非「全部馬達」</td><td>直行要選 <b>全部馬達</b></td></tr>
+        <tr><td>一直向前不停</td><td>忘記「暫停」或「停止」</td><td>每個動作後補上暫停 + 停止</td></tr>
+        <tr><td>邊長太長／太短</td><td>直行時間不準</td><td>修改步驟 4 算出的毫秒數</td></tr>
+        <tr><td>走成菱形（不是正方形）</td><td>轉彎時間不準</td><td>逐次加減 50ms 微調</td></tr>
+        <tr><td>越走越歪</td><td>左右馬達力度不同、電池弱</td><td>快的一邊速度調低（100→95）或換電池</td></tr>
+        <tr><td>地板打滑</td><td>速度太快</td><td>速度由 100 降至 80</td></tr>
+      </tbody></table></div>
+
+  <div class="step"><h4><span class="stepno">9</span>自我檢查表（每項 1 分，共 6 分）</h4>
+    <ul class="chk" id="chkList"></ul>
+    <div id="taskRes" class="res"></div></div>
+
+  <h3>🎬 示範影片（可選）</h3>
+  <div id="video3"></div>
+
+  <h3>🚀 挑戰任務（做得快的同學，不計分）</h3>
+  <ol>
+    <li><b>三角形挑戰：</b>改成走正三角形。轉彎角度要多少度？「重複」次數改成幾？</li>
+    <li><b>變數挑戰：</b>建立變數 <code class="inline">邊長時間</code> 和 <code class="inline">轉彎時間</code>，之後只改一個數值就能調整整個程式。</li>
+    <li><b>雙倍挑戰：</b>走 2×2 格地磚的大正方形，只准改動<u>一個</u>數字。</li>
+    <li><b>提示挑戰：</b>每轉完一個角，就在 LED 顯示數字（1、2、3、4）或播放一下音效。</li>
+    <li><b>反方向挑戰：</b>走完正方形後，沿相反方向再走一次回到起點。</li>
+  </ol>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="s7">
+  <h2><span class="no">✓</span>本課總結・重要詞彙</h2>
+  <ol>
+    <li>機械人 = 能<strong>感知環境</strong> → 依<strong>程式作決定</strong> → <strong>執行動作</strong>的系統。</li>
+    <li>會動的不一定是機械人（風扇、遙控車、夾公仔機）；不像人形的也可以是（升降機、自動門）。</li>
+    <li>任何機械人都可拆解為 <strong>輸入（感測器）→ 處理（控制器＋程式）→ 輸出（驅動器）</strong>。</li>
+    <li>編程需要<strong>量度、計算、試驗、除錯</strong>——這正是設計與科技的核心技能。</li>
+  </ol>
+  <table><thead><tr><th>中文</th><th>English</th><th>中文</th><th>English</th></tr></thead>
+    <tbody>
+      <tr><td>機械人</td><td>Robot</td><td>自動化</td><td>Automation</td></tr>
+      <tr><td>感測器</td><td>Sensor</td><td>驅動器</td><td>Actuator</td></tr>
+      <tr><td>輸入／處理／輸出</td><td>Input / Process / Output</td><td>微控制器</td><td>Microcontroller</td></tr>
+      <tr><td>程式</td><td>Program</td><td>迴圈</td><td>Loop</td></tr>
+      <tr><td>除錯</td><td>Debugging</td><td>人形機械人</td><td>Humanoid robot</td></tr>
+    </tbody></table>
+  <div class="box"><strong>下一課預告：</strong>感測器的世界——用「矩陣激光測距」讓小車自己「看見」障礙物並避開。</div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="s8">
+  <h2><span class="no">交</span>成績單與輸出功課</h2>
+  <div id="scoreTable"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+    <button class="btn-main" onclick="refreshScore()">🔄 更新成績</button>
+    <button class="btn-go" onclick="exportReport()">📥 輸出功課 HTML（交給老師）</button>
+    <button class="btn-ghost" onclick="printReport()">🖨️ 列印／存為 PDF</button>
+  </div>
+  <div class="tip" style="margin-top:14px">
+    <b>繳交步驟：</b>① 先確認頁頂已填班別／學號／姓名 → ② 按「輸出功課 HTML」→ ③ 檔案會下載到「下載」資料夾，名稱例如
+    <code class="inline">DT_L1_1A_12_陳大文.html</code> → ④ 連同 MakeCode 專案分享連結，一併上傳到 eClass／Google Classroom。
+  </div>
+</section>
+
+<!-- ============================================================
+     ★★★ 老師專用說明，做好後可整段刪除 ★★★
+============================================================ -->
+<section class="teacher" id="teacherguide">
+  <h2><span class="no">師</span>老師專用說明</h2>
+
+  <h3>A. 需要準備的 15 個圖片檔（路徑已寫好，放入即自動顯示）</h3>
+  <table><thead><tr><th style="width:200px">檔案名稱</th><th>內容</th></tr></thead><tbody>
+    <tr><td><code class="inline">images/q1.jpg</code></td><td>工業機械手臂</td></tr>
+    <tr><td><code class="inline">images/q2.jpg</code></td><td>送餐機械人</td></tr>
+    <tr><td><code class="inline">images/q3.jpg</code></td><td>自動掃地機械人</td></tr>
+    <tr><td><code class="inline">images/q4.jpg</code></td><td>升降機</td></tr>
+    <tr><td><code class="inline">images/q5.jpg</code></td><td>自動門</td></tr>
+    <tr><td><code class="inline">images/q6.jpg</code></td><td>手動遙控車</td></tr>
+    <tr><td><code class="inline">images/q7.jpg</code></td><td>風扇</td></tr>
+    <tr><td><code class="inline">images/q8.jpg</code></td><td>夾公仔機</td></tr>
+    <tr><td><code class="inline">images/q9.jpg</code></td><td>高達模型</td></tr>
+    <tr><td><code class="inline">images/p1-definition.png</code></td><td>感知→決定→動作循環圖</td></tr>
+    <tr><td><code class="inline">images/p3-maqueen.png</code></td><td>麥昆 Plus 小車實物標示圖</td></tr>
+    <tr><td><code class="inline">images/p4-extension.png</code></td><td>加入 maqueenPlusV2 擴展截圖</td></tr>
+   <tr><td><code class="inline">images/p6-code-line.png</code></td><td>步驟 4「測試程式 A：前進 2 秒」積木截圖（圖 5）</td></tr>
+    <tr><td><code class="inline">images/p7-code-turn.png</code></td><td>步驟 5「測試程式 B：原地向右轉」積木截圖（圖 6）</td></tr>
+    <tr><td><code class="inline">images/p8-code-full.png</code></td><td>步驟 6「完整積木程式」截圖（圖 7）</td></tr>
+<tr><td><code class="inline">images/p6-code-line.png</code></td><td>步驟 4「測試程式 A：前進 2 秒」積木截圖</td></tr>
+    <tr><td><code class="inline">images/p7-code-turn.png</code></td><td>步驟 5「測試程式 B：原地向右轉」積木截圖</td></tr>
+  </tbody></table>
+  <p>檔案未放好時會自動顯示虛線提示框（寫明缺哪個檔），不會出現破圖，可以放心先派給學生。<br>
+     若你的圖是 png／jpg 不一致，只需改 <code class="inline">ROBOTS</code> 內的 <code class="inline">img</code> 或 HTML 的 <code class="inline">src</code>。<br>
+     第 5 節 10 個部件圖已用 <b>SVG 畫在檔案內</b>，不需任何圖片檔，離線一定顯示。</p>
+
+  <h3>B. Google Drive 影片（已接好）</h3>
+<pre>video1 → 1FJHNPTfrtjKMGWVqamwlrLC3Ewh1rGth（搞笑片段剪輯）
+video2 → 1i5gbkzhbU8x-xQmlK-8BfT2VbyG8lmcp（最震撼精彩瞬間）</pre>
+  <p>本檔用 <code class="inline">https://drive.google.com/file/d/檔案ID/preview</code> 嵌入 iframe。<br>
+     <b>⚠️ 一定要做：</b>在 Drive 對兩個檔案按「共用」→ 一般存取權設為 <b>「知道連結的任何人」／檢視者</b>，否則學生會見到「需要存取權」。<br>
+     要換片只需改 <code class="inline">MEDIA</code> 內的 <code class="inline">id</code>。也支援 <code class="inline">type:"youtube"</code>（填 id）或 <code class="inline">type:"file"</code>（填本機 mp4 路徑）。<br>
+     每條影片下方都有「▸ 播不到？」摺疊區，內含 Drive 原連結及<b>「📂 由本機選擇影片檔」</b>按鈕（即場揀 mp4 播放，不受網絡／路徑影響），示範課最穩陣。</p>
+  <p><b>備用：</b>如果學校網絡封鎖 Drive，把 mp4 放入 <code class="inline">videos/</code> 並改為
+     <code class="inline">{ type:"file", src:"videos/v1.mp4" }</code>；若播不到多數是編碼問題（YouTube 下載檔常為 VP9／AV1，iPhone 為 HEVC），用 HandBrake 轉成 <b>H.264 + AAC</b> 即可。</p>
+
+  <h3>C. 練習 1 的提示機制</h3>
+  <p>只列出 5 句<b>中文</b>（次序正確）；學生按 💡 或按中文句子本身，才逐句顯示對應英文。提示<b>不扣分</b>，但用了幾次會記錄在成績單及繳交報告，方便你看難度。<br>
+     評分：第一次就排對 = 5 分；之後才排對 = 3 分；按過「顯示答案」= 0 分。</p>
+
+  <h3>D. 關於「夾公仔機」的答案</h3>
+  <p>本檔設定為<b>「不是機械人」</b>——方向和落爪都由玩家即時操控。想改為「是」，把 <code class="inline">ROBOTS</code> 中 <code class="inline">q8</code> 的 <code class="inline">ans:false</code> 改成 <code class="inline">true</code> 並修改 <code class="inline">why</code> 文字。</p>
+
+  <h3>E. 改分數</h3>
+<pre>const MAX = { s1:5, s2:9, s3:5, s4:4, s5:10, s6a:3, s6b:3, s6c:6 };</pre>
+  <p>總分會自動重算。轉彎記錄：填滿 2 行以上得滿分、1 行得一半。短答題每題需 15 字以上。</p>
+
+  <h3>F. 收功課</h3>
+  <p>學生輸出的 HTML 內含成績表、逐題記錄、兩題文字答案、計算結果、轉彎試驗表、檢查表及簽署欄，檔尾亦嵌入 <code class="inline">&lt;!-- DATA: {...} --&gt;</code> JSON 方便日後批量統計。建議課堂尾段老師巡視一次，確認學生真的按了輸出鍵。</p>
+</section>
+
+<footer>設計與科技科（DT）｜自動化與機械人 第一堂｜學生自學筆記 v3</footer>
+</main>
+
+<script>
+/* =====================================================================
+   ★★★ 老師設定區 ★★★
+===================================================================== */
+const MEDIA = {
+  video1:{ type:"gdrive", id:"1FJHNPTfrtjKMGWVqamwlrLC3Ewh1rGth",
+           title:"2026 第二屆世界人形機械人運動會 — 搞笑片段剪輯" },
+  video2:{ type:"gdrive", id:"1i5gbkzhbU8x-xQmlK-8BfT2VbyG8lmcp",
+           title:"未來已來！世界人形機械人運動會最震撼的精彩瞬間" },
+  video3:{ type:"none", id:"", src:"videos/v3.mp4" }
+};
+
+const MAX = { s1:5, s2:9, s3:5, s4:4, s5:10, s6a:3, s6b:3, s6c:6 };
+const TOTAL = Object.values(MAX).reduce((a,b)=>a+b,0);
+
+const ROBOTS = [
+ {id:"q1",img:"images/q1.jpg",name:"工業機械手臂",en:"Industrial robot arm",ans:true,
+  why:"✔ 是機械人。它有位置感測器，依程式重複做出精確動作（焊接、噴漆、搬運）。"},
+ {id:"q2",img:"images/q2.jpg",name:"送餐機械人",en:"Food delivery robot",ans:true,
+  why:"✔ 是機械人。用鏡頭／感測器認路及避開客人，自己決定路線，再用馬達行走。"},
+ {id:"q3",img:"images/q3.jpg",name:"自動掃地機械人",en:"Robot vacuum cleaner",ans:true,
+  why:"✔ 是機械人。碰到牆會自己轉向，電量低會回充電座，是「感知→決定→動作」的典型。"},
+ {id:"q4",img:"images/q4.jpg",name:"升降機",en:"Lift / Elevator",ans:true,
+  why:"✔ 是機械人（自動化系統）。感知你按了哪層、門有沒有夾到人，再由控制器指揮馬達。"},
+ {id:"q5",img:"images/q5.jpg",name:"自動門",en:"Automatic door",ans:true,
+  why:"✔ 是機械人（自動化系統）。紅外線感測器偵測到人 → 控制電路決定 → 馬達開門。"},
+ {id:"q6",img:"images/q6.jpg",name:"手動遙控車",en:"Remote-controlled car",ans:false,
+  why:"✘ 不是機械人。每個動作都要人即時操控，「大腦」是人，車本身不感知、不決定。"},
+ {id:"q7",img:"images/q7.jpg",name:"風扇",en:"Electric fan",ans:false,
+  why:"✘ 不是機械人。只重複同一動作，沒有感測環境、沒有作決定。（有溫度感應自動調速的智能風扇則另計）"},
+ {id:"q8",img:"images/q8.jpg",name:"夾公仔機",en:"Claw crane machine",ans:false,
+  why:"✘ 不是機械人。左右前後和落爪全部由玩家即時控制，機器不會「看見」公仔，也不會自己決定夾哪一隻——與遙控車同類。（不過它的爪力大小是程式預設的，算有少許自動化成分，是很好的討論題！）"},
+ {id:"q9",img:"images/q9.jpg",name:"高達模型",en:"Gundam model kit",ans:false,
+  why:"✘ 不是機械人。外形最似機械人，但沒有感測器、沒有控制器，也不會自己動。記住：<b>樣子不是重點，會不會感知和決定才是重點。</b>"}
+];
+
+/* ============ 部件圖鑑（SVG 直接畫） ============ */
+const P0='<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">';
+const PARTS=[
+ {n:"超聲波感測器",en:"Ultrasonic sensor",st:"in",use:"發出聲波再接收回音，量度前方障礙物距離",
+  svg:P0+'<rect x="6" y="16" width="86" height="46" rx="6" fill="#3a72b0"/><circle cx="30" cy="39" r="15" fill="#e8eff7" stroke="#1d4c7c" stroke-width="3"/><circle cx="68" cy="39" r="15" fill="#e8eff7" stroke="#1d4c7c" stroke-width="3"/><circle cx="30" cy="39" r="5" fill="#93a9c2"/><circle cx="68" cy="39" r="5" fill="#93a9c2"/><g fill="none" stroke="#f0a500" stroke-width="3"><path d="M98 26a20 20 0 0 1 0 28"/><path d="M108 18a32 32 0 0 1 0 44"/></g><g fill="#d9a021"><rect x="18" y="62" width="5" height="13"/><rect x="36" y="62" width="5" height="13"/><rect x="54" y="62" width="5" height="13"/><rect x="72" y="62" width="5" height="13"/></g></svg>'},
+ {n:"循線感測器",en:"Line-following sensor",st:"in",use:"射出紅外線，分辨地面是黑線還是白色",
+  svg:P0+'<rect x="18" y="10" width="84" height="24" rx="5" fill="#2e8b57"/><circle cx="40" cy="22" r="7" fill="#fff" stroke="#1c5c39" stroke-width="2"/><circle cx="80" cy="22" r="7" fill="#e74c3c" stroke="#7b241c" stroke-width="2"/><g stroke="#e74c3c" stroke-width="3" stroke-dasharray="4 3"><path d="M40 31v22"/><path d="M80 31v22"/></g><rect x="0" y="55" width="120" height="20" fill="#f1f3f5" stroke="#dde3ea"/><rect x="26" y="55" width="32" height="20" fill="#222"/></svg>'},
+ {n:"按鈕 A、B",en:"Push buttons",st:"in",use:"讓使用者按下，告訴機械人「開始」或「停止」",
+  svg:P0+'<rect x="8" y="14" width="104" height="52" rx="9" fill="#d8dee6" stroke="#9aa7b5" stroke-width="2"/><circle cx="38" cy="40" r="15" fill="#f7f8fa" stroke="#8a97a5" stroke-width="3"/><circle cx="38" cy="40" r="9" fill="#2b3a4a"/><text x="38" y="44" font-size="10" fill="#fff" text-anchor="middle" font-family="sans-serif">A</text><circle cx="82" cy="40" r="15" fill="#f7f8fa" stroke="#8a97a5" stroke-width="3"/><circle cx="82" cy="40" r="9" fill="#2b3a4a"/><text x="82" y="44" font-size="10" fill="#fff" text-anchor="middle" font-family="sans-serif">B</text></svg>'},
+ {n:"攝影機／鏡頭",en:"Camera",st:"in",use:"拍攝影像，讓機械人「看見」人和路線",
+  svg:P0+'<rect x="12" y="20" width="76" height="46" rx="8" fill="#37474f"/><rect x="38" y="12" width="26" height="10" rx="3" fill="#546e7a"/><circle cx="50" cy="43" r="17" fill="#90a4ae"/><circle cx="50" cy="43" r="11" fill="#1a237e"/><circle cx="46" cy="39" r="4" fill="#fff" opacity=".85"/><path d="M88 32l24-11v37l-24-11z" fill="#546e7a"/></svg>'},
+ {n:"micro:bit 微控制器",en:"Microcontroller",st:"pr",use:"機械人的「大腦」，讀取感測器資料並執行程式",
+  svg:P0+'<g fill="#c8a13a"><rect x="14" y="22" width="14" height="4"/><rect x="14" y="32" width="14" height="4"/><rect x="14" y="42" width="14" height="4"/><rect x="14" y="52" width="14" height="4"/><rect x="92" y="22" width="14" height="4"/><rect x="92" y="32" width="14" height="4"/><rect x="92" y="42" width="14" height="4"/><rect x="92" y="52" width="14" height="4"/></g><rect x="28" y="14" width="64" height="52" rx="5" fill="#263238"/><circle cx="36" cy="22" r="3" fill="#78909c"/><text x="60" y="45" font-size="15" fill="#8fd3ff" text-anchor="middle" font-family="sans-serif">CPU</text></svg>'},
+ {n:"程式（積木碼）",en:"Program / Code",st:"pr",use:"一連串指令，決定機械人幾時做什麼",
+  svg:P0+'<rect x="8" y="8" width="104" height="64" rx="8" fill="#eef2f7" stroke="#c3cedb" stroke-width="2"/><rect x="18" y="17" width="86" height="13" rx="4" fill="#4a9ad4"/><rect x="26" y="34" width="72" height="13" rx="4" fill="#f0a500"/><rect x="34" y="51" width="54" height="13" rx="4" fill="#7bbf6a"/><circle cx="26" cy="23" r="3" fill="#fff" opacity=".8"/></svg>'},
+ {n:"馬達 + 車輪",en:"Motor &amp; wheel",st:"ou",use:"轉動車輪，令小車前進、後退和轉彎",
+  svg:P0+'<rect x="6" y="26" width="40" height="28" rx="6" fill="#78909c"/><rect x="46" y="36" width="14" height="8" fill="#b0bec5"/><circle cx="84" cy="40" r="26" fill="#2f3640"/><circle cx="84" cy="40" r="12" fill="#9aa5ac"/><g stroke="#5b6670" stroke-width="3"><path d="M84 28v-5"/><path d="M84 52v5"/><path d="M72 40h-5"/><path d="M96 40h5"/></g><rect x="2" y="34" width="6" height="12" fill="#546e7a"/></svg>'},
+ {n:"LED 顯示屏",en:"LED display",st:"ou",use:"用 5×5 燈點顯示數字、圖案或表情",
+  svg:P0+'<rect x="18" y="8" width="84" height="64" rx="8" fill="#1b1b1b"/><g fill="#ff4d4d">'+
+   [0,1,2,3,4].map(function(r){return [0,1,2,3,4].map(function(c){
+     return '<circle cx="'+(32+c*14)+'" cy="'+(20+r*13)+'" r="4" opacity="'+((r+c)%2?0.25:1)+'"/>';}).join('');}).join('')+'</g></svg>'},
+ {n:"蜂鳴器",en:"Buzzer",st:"ou",use:"發出「嘟嘟」聲，作提示或播放音樂",
+  svg:P0+'<circle cx="42" cy="40" r="24" fill="#212121"/><circle cx="42" cy="40" r="6" fill="#616161"/><g fill="#424242"><rect x="34" y="62" width="4" height="13"/><rect x="46" y="62" width="4" height="13"/></g><g fill="none" stroke="#f0a500" stroke-width="3"><path d="M74 28a18 18 0 0 1 0 24"/><path d="M84 20a30 30 0 0 1 0 40"/><path d="M94 12a42 42 0 0 1 0 56"/></g></svg>'},
+ {n:"伺服馬達",en:"Servo motor",st:"ou",use:"轉到指定角度，用於機械臂、爪和關節",
+  svg:P0+'<rect x="24" y="26" width="54" height="40" rx="4" fill="#2b6cb0"/><rect x="12" y="34" width="12" height="12" fill="#4a5568"/><rect x="78" y="34" width="12" height="12" fill="#4a5568"/><circle cx="51" cy="26" r="11" fill="#90cdf4" stroke="#1a4e8a" stroke-width="2"/><rect x="49" y="6" width="36" height="8" rx="4" fill="#e2e8f0" stroke="#a0aec0" transform="rotate(-25 51 22)"/><circle cx="51" cy="26" r="3" fill="#1a4e8a"/></svg>'}
+];
+const STGN={in:"輸入",pr:"處理",ou:"輸出"};
+
+const CHECKS=["我成功加入了 maqueenPlusV2 擴展",
+ "我在「當啟動時」第一行加了「初始化麥昆PLUS」",
+ "我量度了地磚邊長，並計算出直行所需時間",
+ "我用試驗方法找出轉 90° 所需時間",
+ "我用了「重複 4 次」迴圈，而不是抄 4 次同樣的積木",
+ "小車能大致走回起點（誤差在半格地磚以內）"];
+
+const MATCH=[
+ {r:"工業機械手臂",f:"在工廠內重複進行焊接、噴漆、搬運等精確而危險的工作"},
+ {r:"送餐機械人",f:"在餐廳沿指定路線把食物送到客人餐桌，並避開行人"},
+ {r:"自動掃地機械人",f:"在家中自行走動吸塵，碰到障礙物會轉向，電量低會回充電座"},
+ {r:"升降機",f:"把人和貨物在大廈不同樓層之間安全地上下運送"},
+ {r:"自動門",f:"感應到有人接近時自動打開，方便出入及保持室內溫度"}
+];
+const SENT=["A robot","is a machine","that can sense the environment,","make decisions using a program,","and then carry out actions."];
+const SENTZH=["機械人","是一部機器／系統","能夠感知環境，","依照程式作出決定，","然後執行指定的動作。"];
+
+/* ============ 狀態 ============ */
+const KEY="dtRobotL1v3";
+let D={ stu:{cls:"",num:"",name:"",date:""},
+        s1:{score:0,tries:0,revealed:false,done:false,hints:0},
+        s2:{}, s3:{score:null,picked:{}}, s4:{d1:"",d2:"",shown:false}, s5:{},
+        calc:{t:"2",d:"",tile:"60",out:"",ok:false},
+        turn:[], chk:CHECKS.map(function(){return false;}) };
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(D)); }catch(e){} }
+function load(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||"null"); if(o) D=Object.assign(D,o);}catch(e){} }
+
+/* ============ 影片 ============ */
+function pickerHTML(id){
+  return '<input type="file" accept="video/*" id="fp-'+id+'" style="display:none">'+
+    '<button class="btn-ghost btn-sm" id="fb-btn-'+id+'">📂 由本機選擇影片檔</button>';
+}
+function bindPicker(id){
+  var inp=document.getElementById("fp-"+id), btn=document.getElementById("fb-btn-"+id);
+  if(!inp||!btn) return;
+  btn.onclick=function(){ inp.click(); };
+  inp.onchange=function(){ var f=inp.files[0]; if(!f) return;
+    document.getElementById(id).innerHTML='<div class="vwrap"><video controls playsinline src="'+
+      URL.createObjectURL(f)+'"></video></div><p class="figcap">已載入本機影片：'+f.name+'</p>'; };
+}
+function helpBlock(id,extra){
+  return '<details style="font-size:.88rem;margin-bottom:10px"><summary style="cursor:pointer;color:#14509e">▸ 影片播不到？點此</summary>'+
+    '<div style="padding:8px 0">'+extra+'<div style="margin-top:8px">'+pickerHTML(id)+'</div></div></details>';
+}
+function renderVideo(id,cfg,label,hint){
+  var el=document.getElementById(id); if(!el) return;
+  if(cfg.type==="gdrive"&&cfg.id){
+    var url="https://drive.google.com/file/d/"+cfg.id;
+    el.innerHTML='<div class="vwrap"><iframe src="'+url+'/preview" title="'+(cfg.title||label)+
+      '" allow="autoplay; fullscreen" allowfullscreen></iframe></div>'+
+      '<p class="figcap">🎬 '+(cfg.title||label)+'　·　<a href="'+url+'/view" target="_blank" rel="noopener">在 Google Drive 開啟（全螢幕）</a></p>'+
+      helpBlock(id,'① 確認已連上互聯網；② 按上面連結直接在 Drive 開啟；③ 若顯示「需要存取權」請通知老師（共用設定需為「知道連結的任何人」）；④ 或由老師派發的 mp4 直接播放：');
+    bindPicker(id); return;
+  }
+  if(cfg.type==="youtube"&&cfg.id){
+    el.innerHTML='<div class="vwrap"><iframe src="https://www.youtube.com/embed/'+cfg.id+'" title="'+label+
+      '" allow="accelerometer;autoplay;clipboard-write;encrypted-media;picture-in-picture" allowfullscreen></iframe></div>';
+    return;
+  }
+  if(cfg.type==="file"&&cfg.src){
+    el.innerHTML='<div class="vwrap"><video id="vd-'+id+'" controls playsinline preload="metadata">'+
+      '<source src="'+cfg.src+'" type="video/mp4"></video></div><div id="er-'+id+'"></div>';
+    var v=document.getElementById("vd-"+id);
+    var fail=function(){ showVideoError(id,cfg.src); };
+    v.addEventListener("error",fail,true);
+    v.querySelector("source").addEventListener("error",fail);
+    setTimeout(function(){ if(v.readyState===0) showVideoError(id,cfg.src,true); },3500);
+    return;
+  }
+  el.innerHTML='<div class="ph"><span class="ico">🎬</span><b>'+label+'</b><span>'+hint+'</span>'+
+    '<code>MEDIA.'+id+'</code></div>'+helpBlock(id,'老師尚未設定此影片。');
+  bindPicker(id);
+}
+function showVideoError(id,src,soft){
+  var box=document.getElementById("er-"+id)||document.getElementById(id);
+  if(box.dataset.err) return; box.dataset.err="1";
+  box.innerHTML='<div class="verr"><b>⚠️ 影片未能播放'+(soft?"（載入超時）":"")+'：</b><code>'+src+'</code><br>'+
+   '常見原因：① 影片編碼不是 H.264；② 檔名或路徑不符；③ videos 資料夾未一同派發。<br>最快解決：按下面按鈕直接由電腦選檔播放。</div>'+
+   '<div style="margin:8px 0">'+pickerHTML(id)+'</div>';
+  bindPicker(id);
+}
+
+/* ============ 1 句子重組（中文＋提示） ============ */
+var picked=[];
+function buildZhList(){
+  var ol=document.getElementById("zhList"); ol.innerHTML="";
+  SENTZH.forEach(function(z,i){
+    var li=document.createElement("li");
+    li.innerHTML='<span class="zhtxt" data-i="'+i+'">'+z+'</span> '+
+      '<button class="btn-ghost btn-sm" data-i="'+i+'">💡 提示</button>'+
+      '<span class="en" id="he'+i+'">'+SENT[i]+'</span>';
+    li.querySelector(".zhtxt").onclick=function(){ hint(i); };
+    li.querySelector("button").onclick=function(){ hint(i); };
+    ol.appendChild(li);
+  });
+}
+function hint(i){
+  var el=document.getElementById("he"+i);
+  if(el.classList.contains("show")) return;
+  el.classList.add("show"); D.s1.hints=(D.s1.hints||0)+1; save(); refreshScore();
+}
+function buildSentence(){
+  picked=[];
+  var order=SENT.map(function(_,i){return i;}).sort(function(){return Math.random()-0.5;});
+  var p=document.getElementById("chipPool"); p.innerHTML="";
+  order.forEach(function(i){
+    var b=document.createElement("span"); b.className="chip"; b.textContent=SENT[i]; b.dataset.i=i;
+    b.onclick=function(){ if(b.classList.contains("in")) return; b.classList.add("in"); picked.push(i); drawAns(); };
+    p.appendChild(b);
+  });
+  document.getElementById("chipAns").innerHTML="";
+  document.getElementById("sentRes").className="res";
+}
+function drawAns(){
+  var a=document.getElementById("chipAns"); a.innerHTML="";
+  picked.forEach(function(i,pos){
+    var b=document.createElement("span"); b.className="chip"; b.textContent=SENT[i];
+    b.onclick=function(){ picked.splice(pos,1);
+      Array.prototype.forEach.call(document.querySelectorAll('#chipPool .chip'),function(c){
+        if(+c.dataset.i===i) c.classList.remove("in"); });
+      drawAns(); };
+    a.appendChild(b);
+  });
+}
+function checkSentence(){
+  var r=document.getElementById("sentRes"); r.className="res show";
+  if(picked.length<SENT.length){ r.innerHTML="⚠️ 還未用完所有詞組，再試試！"; return; }
+  var ok=picked.every(function(v,i){return v===i;});
+  D.s1.tries++;
+  if(ok){
+    if(!D.s1.done){ D.s1.score=D.s1.revealed?0:(D.s1.tries===1?MAX.s1:3); D.s1.done=true; }
+    r.innerHTML="🎉 完全正確！得 "+D.s1.score+" / "+MAX.s1+" 分（已用提示 "+(D.s1.hints||0)+" 次）<br><b>"+SENT.join(" ")+"</b>";
+  }else{
+    r.innerHTML="❌ 次序未對。提示：由「A robot」開始，最後以「and then carry out actions.」結尾。可按中文句子看提示，再試一次！";
+  }
+  save(); refreshScore();
+}
+function showSentence(){
+  if(!D.s1.done){ D.s1.revealed=true; D.s1.score=0; D.s1.done=true; }
+  picked=SENT.map(function(_,i){return i;}); drawAns();
+  Array.prototype.forEach.call(document.querySelectorAll('#chipPool .chip'),function(c){c.classList.add("in");});
+  var r=document.getElementById("sentRes"); r.className="res show";
+  r.innerHTML="✅ 正確答案：<b>"+SENT.join(" ")+"</b>";
+  save(); refreshScore();
+}
+
+/* ============ 2 是否機械人 ============ */
+function buildRobots(){
+  var g=document.getElementById("robotGrid"); g.innerHTML="";
+  ROBOTS.forEach(function(r,idx){
+    var d=document.createElement("div"); d.className="rcard";
+    d.innerHTML='<img src="'+r.img+'" alt="'+r.name+'" onerror="imgFail(this,\''+r.id.toUpperCase()+'\',\''+r.name+'\')">'+
+      '<h4>'+(idx+1)+'. '+r.name+'</h4><div class="en">'+r.en+'</div>'+
+      '<div class="rbtns"><button data-a="1">✅ 是機械人</button><button data-a="0">❌ 不是</button></div>'+
+      '<div class="fb" id="fb-'+r.id+'"></div>';
+    Array.prototype.forEach.call(d.querySelectorAll(".rbtns button"),function(b){
+      b.onclick=function(){ ansRobot(r.id,b.dataset.a==="1",b); }; });
+    g.appendChild(d);
+    if(r.id in D.s2) replayRobot(r);
+  });
+}
+function replayRobot(r){
+  var fb=document.getElementById("fb-"+r.id);
+  fb.className="fb "+(D.s2[r.id]?"ok":"no");
+  fb.innerHTML=(D.s2[r.id]?"👍 你答對了！<br>":"你第一次答錯了，看看解釋：<br>")+r.why;
+}
+function ansRobot(id,choice,btn){
+  var r=null; ROBOTS.forEach(function(x){ if(x.id===id) r=x; });
+  var ok=(choice===r.ans);
+  if(!(id in D.s2)) D.s2[id]=ok;
+  var fb=document.getElementById("fb-"+id);
+  fb.className="fb "+(ok?"ok":"no");
+  fb.innerHTML=(ok?"👍 答對了！<br>":"再想想…<br>")+r.why;
+  Array.prototype.forEach.call(btn.parentElement.querySelectorAll("button"),function(b){b.style.opacity=.55;});
+  btn.style.opacity=1;
+  if(Object.keys(D.s2).length===ROBOTS.length){
+    var c=Object.keys(D.s2).filter(function(k){return D.s2[k];}).length;
+    var res=document.getElementById("robotRes"); res.className="res show";
+    res.innerHTML="📊 9 題完成，第一次作答成績：<b>"+c+" / "+ROBOTS.length+"</b>"+(c>=7?"　做得好！":"　建議重看第 1 節定義。");
+  }
+  save(); refreshScore();
+}
+
+/* ============ 3 配對 ============ */
+function buildMatch(){
+  var tb=document.getElementById("matchBody"); tb.innerHTML="";
+  var opts=MATCH.map(function(m,i){return {i:i,f:m.f};}).sort(function(){return Math.random()-0.5;});
+  MATCH.forEach(function(m,i){
+    var sel='<select class="sel" id="m'+i+'"><option value="">— 請選擇 —</option>';
+    opts.forEach(function(o){ sel+='<option value="'+o.i+'"'+(D.s3.picked[i]==o.i?" selected":"")+'>'+o.f+'</option>'; });
+    sel+='</select>';
+    tb.insertAdjacentHTML("beforeend","<tr><td><b>"+m.r+"</b></td><td>"+sel+'</td><td id="mr'+i+'" style="text-align:center"></td></tr>');
+  });
+  MATCH.forEach(function(m,i){ document.getElementById("m"+i).onchange=function(e){ D.s3.picked[i]=e.target.value; save(); }; });
+}
+function checkMatch(){
+  var c=0,blank=0;
+  MATCH.forEach(function(m,i){
+    var v=document.getElementById("m"+i).value, cell=document.getElementById("mr"+i);
+    D.s3.picked[i]=v;
+    if(v===""){ blank++; cell.innerHTML='<span class="tag">—</span>'; return; }
+    if(+v===i){ c++; cell.innerHTML='<span class="tag ok">✔</span>'; } else cell.innerHTML='<span class="tag no">✘</span>';
+  });
+  if(D.s3.score===null&&blank===0) D.s3.score=c;
+  var r=document.getElementById("matchRes"); r.className="res show";
+  r.innerHTML=blank?("⚠️ 還有 "+blank+" 題未選。目前答對 "+c+" / 5。")
+    :("📊 成績（以第一次計）：<b>"+D.s3.score+" / 5</b>　今次答對 "+c+" / 5"+(c===5?"　全對！🎉":"　把答錯的再想：它感知什麼？做什麼動作？"));
+  save(); refreshScore();
+}
+function resetMatch(){ buildMatch(); document.getElementById("matchRes").className="res"; }
+
+/* ============ 4 討論 ============ */
+function bindDiscuss(){
+  ["d1","d2"].forEach(function(k){
+    var el=document.getElementById(k); el.value=D.s4[k]||"";
+    el.oninput=function(){ D.s4[k]=el.value; save(); refreshScore(); };
+  });
+  if(D.s4.shown) document.getElementById("modelAns").classList.add("show");
+}
+function showModel(){
+  var a=(D.s4.d1||"").trim().length, b=(D.s4.d2||"").trim().length;
+  if(a<15||b<15){ if(!confirm("你其中一題仍未寫夠 15 字。真的要先看參考答案嗎？（分數仍按你自己寫的內容計）")) return; }
+  D.s4.shown=true;
+  var m=document.getElementById("modelAns"); m.classList.add("show");
+  m.scrollIntoView({behavior:"smooth",block:"start"}); save();
+}
+
+/* ============ 5 部件 ============ */
+function buildParts(){
+  var g=document.getElementById("partGrid"); g.innerHTML="";
+  PARTS.forEach(function(p){
+    var d=document.createElement("div"); d.className="pcard";
+    d.innerHTML=p.svg+'<b>'+p.n+'</b><div class="en">'+p.en+'</div><div class="use">'+p.use+'</div>'+
+      '<button class="btn-ghost btn-sm">🔎 翻開看階段</button><div class="stgbox" style="display:none;margin-top:6px"></div>';
+    var btn=d.querySelector("button"), box=d.querySelector(".stgbox");
+    btn.onclick=function(){ box.style.display="block";
+      box.innerHTML='<span class="stg '+p.st+'">'+STGN[p.st]+'</span>'; btn.style.display="none"; };
+    g.appendChild(d);
+  });
+}
+function buildIPO(){
+  var box=document.getElementById("ipoQuiz"); box.innerHTML="";
+  PARTS.forEach(function(p,i){
+    var row=document.createElement("div"); row.className="qrow"; row.id="ip"+i;
+    row.innerHTML=p.svg+'<span class="q">'+(i+1)+'. '+p.n+'</span><span class="opts">'+
+      ["in","pr","ou"].map(function(s){return '<button data-s="'+s+'">'+STGN[s]+'</button>';}).join('')+
+      '</span><span id="ipr'+i+'"></span>';
+    Array.prototype.forEach.call(row.querySelectorAll(".opts button"),function(b){
+      b.onclick=function(){ ansIPO(i,b.dataset.s); }; });
+    box.appendChild(row);
+    if(i in D.s5){ row.classList.add("done");
+      document.getElementById("ipr"+i).innerHTML=D.s5[i]?'<span class="tag ok">✔ '+STGN[p.st]+'</span>'
+        :'<span class="tag no">✘ 應為「'+STGN[p.st]+'」</span>'; }
+  });
+  ipoSummary();
+}
+function ansIPO(i,s){
+  var p=PARTS[i], ok=(s===p.st);
+  if(!(i in D.s5)) D.s5[i]=ok;
+  document.getElementById("ip"+i).classList.add("done");
+  document.getElementById("ipr"+i).innerHTML=ok?'<span class="tag ok">✔ '+STGN[p.st]+'</span>'
+    :'<span class="tag no">✘ 應為「'+STGN[p.st]+'」</span>';
+  save(); ipoSummary(); refreshScore();
+}
+function ipoSummary(){
+  if(Object.keys(D.s5).length<PARTS.length) return;
+  var c=Object.keys(D.s5).filter(function(k){return D.s5[k];}).length;
+  var r=document.getElementById("ipoRes"); r.className="res show";
+  r.innerHTML="📊 成績：<b>"+c+" / "+PARTS.length+"</b>　記住：感測器＝輸入、控制器和程式＝處理、會動／會發聲發光＝輸出。";
+}
+
+/* ============ 6 計算器 ============ */
+function bindCalc(){
+  ["t","d","tile"].forEach(function(k){
+    var el=document.getElementById("c_"+k); if(D.calc[k]!==undefined&&D.calc[k]!=="") el.value=D.calc[k];
+    el.oninput=function(){ D.calc[k]=el.value; save(); };
+  });
+  if(D.calc.out) document.getElementById("c_out").innerHTML=D.calc.out;
+}
+function calcTime(){
+  D.calc.t=document.getElementById("c_t").value;
+  D.calc.d=document.getElementById("c_d").value;
+  D.calc.tile=document.getElementById("c_tile").value;
+  var t=parseFloat(D.calc.t), d=parseFloat(D.calc.d), L=parseFloat(D.calc.tile);
+  var out=document.getElementById("c_out");
+  if(!(t>0)||!(d>0)||!(L>0)){ out.textContent="⚠️ 請填入三個大於 0 的數字。"; D.calc.ok=false; save(); refreshScore(); return; }
+  var v=d/t, ms=Math.round(L/v*1000);
+  D.calc.out="速度 = "+d+" ÷ "+t+" = <b>"+v.toFixed(1)+" cm/秒</b><br>走 "+L+" cm 需要 = "+L+" ÷ "+v.toFixed(1)+
+    " ≈ <b>"+(ms/1000).toFixed(1)+" 秒</b>　→ 在「暫停 (ms)」積木填上 <b>"+ms+"</b>";
+  D.calc.ok=true; out.innerHTML=D.calc.out; save(); refreshScore();
+}
+
+/* ============ 6 轉彎表（下拉選單 + 自動計算下次數值） ============ */
+const JD_OPT='<option value="">— 選擇 —</option>'+
+  '<option value="less">太少（未夠 90°）</option>'+
+  '<option value="more">太多（超過 90°）</option>'+
+  '<option value="ok">剛好 90° ✔</option>';
+const JD_LBL={less:"太少（未夠 90°）",more:"太多（超過 90°）",ok:"剛好 90°"};
+
+function turnRows(){ return Array.prototype.slice.call(document.querySelectorAll("#turnBody tr.trow")); }
+function renumberTurn(){ turnRows().forEach(function(tr,i){ tr.querySelector(".idx").textContent=i+1; }); }
+function readTurn(){
+  D.turn=turnRows().map(function(tr){
+    return { ms:tr.querySelector(".t-ms").value, deg:tr.querySelector(".t-deg").value,
+             jd:tr.querySelector(".t-jd").value, adj:tr.querySelector(".t-adj").value,
+             next:tr.dataset.next||"" };
+  });
+  save();
+}
+function calcNext(tr){
+  var ms=parseFloat(tr.querySelector(".t-ms").value);
+  var jd=tr.querySelector(".t-jd").value;
+  var adjIn=tr.querySelector(".t-adj"), adj=parseFloat(adjIn.value);
+  var cell=tr.querySelector(".t-next");
+  tr.dataset.next="";
+  if(jd==="ok"){
+    adjIn.disabled=true; adjIn.value="";
+    cell.innerHTML='<b style="color:#1f9d55">✔ 已達 90°，就用 '+(ms>0?ms:"這個")+' ms</b>';
+    if(ms>0) tr.dataset.next=ms;
+    return;
+  }
+  adjIn.disabled=false;
+  if(!(ms>0)||!jd){ cell.innerHTML='<span style="color:#6b7a8c">—</span>'; return; }
+  if(!(adj>0)){ cell.innerHTML='<span style="color:#e08600">↑ 請填調整時間</span>'; return; }
+  var nx=(jd==="less")? ms+adj : ms-adj;
+  if(nx<0) nx=0;
+  cell.innerHTML=(jd==="less"?"＋":"－")+adj+' ms → 下次試 <b>'+nx+' ms</b>';
+  tr.dataset.next=nx;
+}
+function bindTurnRow(tr){
+  Array.prototype.forEach.call(tr.querySelectorAll("input,select"),function(el){
+    var h=function(){ calcNext(tr); readTurn(); refreshScore(); };
+    el.oninput=h; el.onchange=h;
+  });
+  var del=tr.querySelector(".t-del");
+  if(del) del.onclick=function(){
+    if(turnRows().length<=1){ alert("至少保留一行。"); return; }
+    tr.parentNode.removeChild(tr); renumberTurn(); readTurn(); refreshScore();
+  };
+  calcNext(tr);
+}
+function newTurnRow(v){
+  var tr=document.createElement("tr"); tr.className="trow";
+  tr.innerHTML='<td class="idx"></td>'+
+    '<td><input class="t-ms" type="number"></td>'+
+    '<td><input class="t-deg"></td>'+
+    '<td><select class="t-jd">'+JD_OPT+'</select></td>'+
+    '<td><input class="t-adj" type="number"></td>'+
+    '<td class="t-next">—</td>'+
+    '<td style="text-align:center"><button class="btn-sm t-del" title="刪除此行">✕</button></td>';
+  document.getElementById("turnBody").appendChild(tr);
+  if(v){ tr.querySelector(".t-ms").value=v.ms||""; tr.querySelector(".t-deg").value=v.deg||"";
+         tr.querySelector(".t-jd").value=v.jd||""; tr.querySelector(".t-adj").value=v.adj||""; }
+  bindTurnRow(tr); renumberTurn(); return tr;
+}
+function initTurn(){
+  var saved=(D.turn||[]);
+  turnRows().forEach(bindTurnRow);
+  if(saved.length){
+    while(turnRows().length<saved.length) newTurnRow(null);
+    turnRows().forEach(function(tr,i){
+      if(!saved[i]) return;
+      tr.querySelector(".t-ms").value=saved[i].ms||"";
+      tr.querySelector(".t-deg").value=saved[i].deg||"";
+      tr.querySelector(".t-jd").value=saved[i].jd||"";
+      tr.querySelector(".t-adj").disabled=false;
+      tr.querySelector(".t-adj").value=saved[i].adj||"";
+      calcNext(tr);
+    });
+  }
+  renumberTurn(); readTurn();
+}
+function addTurnRow(){
+  var rows=turnRows(), prev=rows[rows.length-1];
+  var tr=newTurnRow(null);
+  if(prev&&prev.dataset.next){ tr.querySelector(".t-ms").value=prev.dataset.next; calcNext(tr); }
+  readTurn(); tr.querySelector(".t-deg").focus();
+}
+function scoreTurn(){
+  readTurn();
+  var n=turnFilled(), r=document.getElementById("turnRes"); r.className="res show";
+  r.innerHTML="已記錄 <b>"+n+"</b> 次完整試驗（需 2 次或以上得滿分 "+MAX.s6b+" 分）。"+
+    (n<2?"<br><span style='font-weight:400'>一次完整記錄＝暫停時間 ＋ 實際角度 ＋ 太多／太少 ＋ 預計調整時間（選「剛好」則不用填調整）。</span>":"");
+  refreshScore();
+}
+function turnFilled(){
+  return (D.turn||[]).filter(function(r){
+    if(!(String(r.ms||"").trim()&&String(r.deg||"").trim()&&String(r.jd||"").trim())) return false;
+    return r.jd==="ok" || String(r.adj||"").trim();
+  }).length;
+}
+
+/* ============ 截圖放大（Lightbox） ============ */
+function initShots(){
+  Array.prototype.forEach.call(document.querySelectorAll("img.shot"),function(im){
+    im.onclick=function(){
+      var lb=document.createElement("div"); lb.id="lb";
+      lb.innerHTML='<img src="'+im.src+'" alt=""><div class="cap">'+(im.alt||"")+'　（按任意位置關閉）</div>';
+      lb.onclick=function(){ document.body.removeChild(lb); };
+      document.body.appendChild(lb);
+    };
+  });
+}
+/* ============ 6 檢查表 ============ */
+function buildChk(){
+  var ul=document.getElementById("chkList"); ul.innerHTML="";
+  CHECKS.forEach(function(t,i){
+    var li=document.createElement("li");
+    li.innerHTML='<input type="checkbox" id="ck'+i+'"'+(D.chk[i]?" checked":"")+'><label for="ck'+i+'">'+t+'</label>';
+    li.querySelector("input").onchange=function(e){ D.chk[i]=e.target.checked; save(); chkSummary(); refreshScore(); };
+    ul.appendChild(li);
+  });
+  chkSummary();
+}
+function chkSummary(){
+  var c=D.chk.filter(Boolean).length;
+  var r=document.getElementById("taskRes"); r.className="res show";
+  r.innerHTML="已完成 <b>"+c+" / "+CHECKS.length+"</b> 項"+(c===CHECKS.length?"　🎉 任務完成，做得非常好！":"");
+}
+
+/* ============ 計分 ============ */
+function scores(){
+  var s2=Object.keys(D.s2).filter(function(k){return D.s2[k];}).length;
+  var s5=Object.keys(D.s5).filter(function(k){return D.s5[k];}).length;
+  var s4=((D.s4.d1||"").trim().length>=15?MAX.s4/2:0)+((D.s4.d2||"").trim().length>=15?MAX.s4/2:0);
+  var n=turnFilled(), s6b=n>=2?MAX.s6b:(n===1?Math.round(MAX.s6b/2):0);
+  return {s1:D.s1.score||0,s2:s2,s3:D.s3.score||0,s4:s4,s5:s5,
+          s6a:D.calc.ok?MAX.s6a:0,s6b:s6b,s6c:D.chk.filter(Boolean).length};
+}
+function projectName(){
+  var c=(D.stu.cls||"班別").replace(/\s/g,""), n=(D.stu.num||"學號").replace(/\s/g,"");
+  return c+"_"+n+"_square";
+}
+function refreshScore(){
+  var s=scores(), sum=0; Object.keys(s).forEach(function(k){sum+=s[k];});
+  var pct=Math.round(sum/TOTAL*100);
+  document.getElementById("scorePill").textContent=sum+" / "+TOTAL+" 分";
+  document.querySelector("#bar>i").style.width=pct+"%";
+  document.getElementById("pct").textContent=pct+"%";
+  var nm=((D.stu.cls||"")+" "+(D.stu.num||"")+" "+(D.stu.name||"")).trim();
+  document.getElementById("whoami").textContent=nm?nm:"未填寫姓名";
+  document.getElementById("idWarn").style.display=(D.stu.cls&&D.stu.num&&D.stu.name)?"none":"block";
+  var pn=projectName();
+  document.getElementById("projName").textContent=pn;
+  document.getElementById("projName2").textContent=pn;
+  var rows=[["1. 英文定義重組","s1"],["2. 判斷是否機械人","s2"],["3. 用途配對","s3"],["4. 影片觀後討論","s4"],
+    ["5. 部件輸入處理輸出分類","s5"],["6a. 直線量度與計算","s6a"],["6b. 轉彎試驗記錄","s6b"],["6c. 實作自我檢查","s6c"]];
+  var t='<table><thead><tr><th>評分項目</th><th style="width:90px">得分</th><th style="width:90px">滿分</th></tr></thead><tbody>';
+  rows.forEach(function(x){ t+='<tr><td>'+x[0]+'</td><td>'+s[x[1]]+'</td><td>'+MAX[x[1]]+'</td></tr>'; });
+  t+='<tr style="background:#eef4fc;font-weight:700"><td>總分</td><td>'+sum+'</td><td>'+TOTAL+'</td></tr>';
+  t+='<tr><td>百分比</td><td colspan="2">'+pct+'%　'+grade(pct)+'</td></tr>';
+  t+='<tr><td>練習 1 使用提示次數</td><td colspan="2">'+(D.s1.hints||0)+' 次（不扣分）</td></tr></tbody></table>';
+  document.getElementById("scoreTable").innerHTML=t;
+  return {s:s,sum:sum,pct:pct};
+}
+function grade(p){ return p>=85?"等級 A（優異）":p>=70?"等級 B（良好）":p>=55?"等級 C（合格）":p>=40?"等級 D（需改進）":"等級 E（請找老師）"; }
+
+/* ============ 輸出功課 ============ */
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}).replace(/\n/g,"<br>"); }
+function buildReport(){
+  var o=refreshScore(), s=o.s, sum=o.sum, pct=o.pct;
+  var rows=[["1. 英文定義重組","s1"],["2. 判斷是否機械人","s2"],["3. 用途配對","s3"],["4. 影片觀後討論","s4"],
+    ["5. 部件分類","s5"],["6a. 直線量度與計算","s6a"],["6b. 轉彎試驗記錄","s6b"],["6c. 實作自我檢查","s6c"]];
+  var st='<table><tr><th>項目</th><th>得分</th><th>滿分</th></tr>';
+  rows.forEach(function(x){ st+='<tr><td>'+x[0]+'</td><td>'+s[x[1]]+'</td><td>'+MAX[x[1]]+'</td></tr>'; });
+  st+='<tr class="tot"><td>總分</td><td>'+sum+'</td><td>'+TOTAL+'</td></tr></table>';
+
+  var r2='<table><tr><th>#</th><th>物品</th><th>第一次作答</th></tr>';
+  ROBOTS.forEach(function(r,i){ r2+='<tr><td>'+(i+1)+'</td><td>'+r.name+'</td><td>'+
+    ((r.id in D.s2)?(D.s2[r.id]?"✔ 正確":"✘ 錯誤"):"未作答")+'</td></tr>'; });
+  r2+='</table>';
+
+  var tt='<table><tr><th>次數</th><th>暫停時間(ms)</th><th>實際角度</th><th>判斷</th><th>預計調整(ms)</th><th>下次試(ms)</th></tr>';
+  (D.turn||[]).forEach(function(r,i){
+    tt+='<tr><td>'+(i+1)+'</td><td>'+esc(r.ms)+'</td><td>'+esc(r.deg)+'</td><td>'+
+        esc(JD_LBL[r.jd]||"")+'</td><td>'+
+        (r.jd==="ok"?"—":(r.jd==="more"?"－":"＋")+esc(r.adj))+'</td><td>'+esc(r.next)+'</td></tr>';
+  });
+  tt+='</table>';
+
+  var ck='<ul>'; CHECKS.forEach(function(t,i){ ck+='<li>'+(D.chk[i]?"☑":"☐")+" "+t+'</li>'; }); ck+='</ul>';
+
+  var now=new Date().toLocaleString("zh-HK");
+  var data=JSON.stringify({stu:D.stu,project:projectName(),scores:s,total:sum,max:TOTAL,pct:pct,
+    hints:D.s1.hints||0,time:now,d1:D.s4.d1,d2:D.s4.d2,turn:D.turn,calc:D.calc,chk:D.chk});
+  return '<!DOCTYPE html><html lang="zh-Hant-HK"><head><meta charset="UTF-8">'+
+  '<title>DT 功課 L1 '+esc(D.stu.cls)+' '+esc(D.stu.num)+' '+esc(D.stu.name)+'</title><style>'+
+  'body{font-family:"Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif;max-width:800px;margin:24px auto;padding:0 16px;line-height:1.7;color:#22303f}'+
+  'h1{font-size:1.4rem;border-bottom:3px solid #1e6fd9;padding-bottom:8px}h2{font-size:1.1rem;color:#14509e;margin-top:26px}'+
+  'table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.95rem}th,td{border:1px solid #dde5ef;padding:7px 10px;text-align:left}'+
+  'th{background:#eef4fc;color:#14509e}tr.tot{background:#eef4fc;font-weight:700}'+
+  '.info{background:#f4f7fb;border:1px solid #dde5ef;border-radius:10px;padding:12px 16px}'+
+  '.big{font-size:1.5rem;font-weight:700;color:#14509e}.ans{background:#fffdf5;border:1px solid #e3c96b;border-radius:10px;padding:10px 14px;white-space:pre-wrap}'+
+  '.sig{margin-top:34px;border-top:1px dashed #999;padding-top:10px;font-size:.9rem;color:#6b7a8c}'+
+  '</style></head><body>'+
+  '<h1>設計與科技科　自動化與機械人（第一堂）　學習報告</h1>'+
+  '<div class="info"><b>班別：</b>'+esc(D.stu.cls)+'　<b>學號：</b>'+esc(D.stu.num)+'　<b>姓名：</b>'+esc(D.stu.name)+
+  '<br><b>日期：</b>'+esc(D.stu.date)+'　<b>輸出時間：</b>'+esc(now)+
+  '<br><b>MakeCode 專案名稱：</b>'+esc(projectName())+'</div>'+
+  '<h2>總成績</h2><p class="big">'+sum+' / '+TOTAL+'　（'+pct+'%）　'+grade(pct)+'</p>'+st+
+  '<p>練習 1 使用提示次數：'+(D.s1.hints||0)+' 次</p>'+
+  '<h2>第 2 節　判斷是否機械人（逐題記錄）</h2>'+r2+
+  '<h2>第 4 節　影片觀後討論</h2><p><b>Q1 機械人運動會對真實生活有什麼用？</b></p><div class="ans">'+esc(D.s4.d1||"（未作答）")+'</div>'+
+  '<p><b>Q2 人形機械人進入工廠／酒店／醫院／家庭的好處與問題？</b></p><div class="ans">'+esc(D.s4.d2||"（未作答）")+'</div>'+
+  '<h2>第 6 節　直線量度與計算</h2><p>測試時間：'+esc(D.calc.t)+' 秒　實測距離：'+esc(D.calc.d)+' cm　地磚邊長：'+esc(D.calc.tile)+' cm</p>'+
+  '<p>計算結果：'+(D.calc.out||"（未計算）")+'</p>'+
+  '<h2>第 6 節　轉 90° 試驗記錄</h2>'+tt+
+  '<h2>第 6 節　實作自我檢查</h2>'+ck+
+  '<div class="sig">學生簽署：____________________　　家長／老師簽署：____________________</div>'+
+  '<!-- DATA: '+data.replace(/--/g,"—")+' -->'+
+  '</body></html>';
+}
+function exportReport(){
+  readTurn();
+  if(!(D.stu.cls&&D.stu.num&&D.stu.name)){ alert("請先在第 0 節填寫班別、學號及姓名！"); location.hash="#s0"; return; }
+  var html=buildReport();
+  var blob=new Blob(["\ufeff"+html],{type:"text/html;charset=utf-8"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="DT_L1_"+D.stu.cls+"_"+D.stu.num+"_"+D.stu.name+".html";
+  document.body.appendChild(a); a.click(); a.parentNode.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); },4000);
+  alert("已輸出功課檔案！請到「下載」資料夾找出檔案，上傳到 eClass／Google Classroom。");
+}
+function printReport(){
+  readTurn();
+  var w=window.open("","_blank"); w.document.write(buildReport()); w.document.close();
+  setTimeout(function(){ w.print(); },500);
+}
+
+/* ============ 啟動 ============ */
+function bindStu(){
+  [["f_cls","cls"],["f_num","num"],["f_name","name"],["f_date","date"]].forEach(function(x){
+    var el=document.getElementById(x[0]); el.value=D.stu[x[1]]||"";
+    el.oninput=function(){ D.stu[x[1]]=el.value; save(); refreshScore(); };
+  });
+  if(!D.stu.date){ var t=new Date();
+    var v=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+    document.getElementById("f_date").value=v; D.stu.date=v; }
+}
+function resetAll(){ if(confirm("確定清除所有答案、分數及進度？此動作不能還原。")){ try{localStorage.removeItem(KEY);}catch(e){} location.reload(); } }
+
+load();
+bindStu(); buildZhList(); buildSentence(); buildRobots(); buildMatch(); bindDiscuss();
+buildParts(); buildIPO(); bindCalc(); initTurn(); buildChk(); initShots();
+renderVideo("video1",MEDIA.video1,"影片一","機械人運動會 — 搞笑片段剪輯");
+renderVideo("video2",MEDIA.video2,"影片二","機械人運動會 — 最震撼精彩瞬間");
+renderVideo("video3",MEDIA.video3,"影片位置 V3（可選）","老師示範小車走正方形");
+if(D.s1.done){
+  picked=SENT.map(function(_,i){return i;}); drawAns();
+  Array.prototype.forEach.call(document.querySelectorAll('#chipPool .chip'),function(c){c.classList.add("in");});
+  var r1=document.getElementById("sentRes"); r1.className="res show";
+  r1.innerHTML="（已完成，得 "+D.s1.score+" 分）<b>"+SENT.join(" ")+"</b>";
+}
+if(D.s3.score!==null){
+  var r3=document.getElementById("matchRes"); r3.className="res show";
+  r3.innerHTML="（已作答，得 "+D.s3.score+" / 5 分，可再檢查一次）";
+}
+refreshScore();
+</script>
+</body>
+</html>
