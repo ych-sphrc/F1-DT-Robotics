@@ -629,61 +629,6 @@ table.fill td.t-next{font-size:.9rem;background:#f6fbff}
   </div>
 </section>
 
-<!-- ============================================================
-     ★★★ 老師專用說明，做好後可整段刪除 ★★★
-============================================================ -->
-<section class="teacher" id="teacherguide">
-  <h2><span class="no">師</span>老師專用說明</h2>
-
-  <h3>A. 需要準備的 15 個圖片檔（路徑已寫好，放入即自動顯示）</h3>
-  <table><thead><tr><th style="width:200px">檔案名稱</th><th>內容</th></tr></thead><tbody>
-    <tr><td><code class="inline">images/q1.jpg</code></td><td>工業機械手臂</td></tr>
-    <tr><td><code class="inline">images/q2.jpg</code></td><td>送餐機械人</td></tr>
-    <tr><td><code class="inline">images/q3.jpg</code></td><td>自動掃地機械人</td></tr>
-    <tr><td><code class="inline">images/q4.jpg</code></td><td>升降機</td></tr>
-    <tr><td><code class="inline">images/q5.jpg</code></td><td>自動門</td></tr>
-    <tr><td><code class="inline">images/q6.jpg</code></td><td>手動遙控車</td></tr>
-    <tr><td><code class="inline">images/q7.jpg</code></td><td>風扇</td></tr>
-    <tr><td><code class="inline">images/q8.jpg</code></td><td>夾公仔機</td></tr>
-    <tr><td><code class="inline">images/q9.jpg</code></td><td>高達模型</td></tr>
-    <tr><td><code class="inline">images/p1-definition.png</code></td><td>感知→決定→動作循環圖</td></tr>
-    <tr><td><code class="inline">images/p3-maqueen.png</code></td><td>麥昆 Plus 小車實物標示圖</td></tr>
-    <tr><td><code class="inline">images/p4-extension.png</code></td><td>加入 maqueenPlusV2 擴展截圖</td></tr>
-   <tr><td><code class="inline">images/p6-code-line.png</code></td><td>步驟 4「測試程式 A：前進 2 秒」積木截圖（圖 5）</td></tr>
-    <tr><td><code class="inline">images/p7-code-turn.png</code></td><td>步驟 5「測試程式 B：原地向右轉」積木截圖（圖 6）</td></tr>
-    <tr><td><code class="inline">images/p8-code-full.png</code></td><td>步驟 6「完整積木程式」截圖（圖 7）</td></tr>
-<tr><td><code class="inline">images/p6-code-line.png</code></td><td>步驟 4「測試程式 A：前進 2 秒」積木截圖</td></tr>
-    <tr><td><code class="inline">images/p7-code-turn.png</code></td><td>步驟 5「測試程式 B：原地向右轉」積木截圖</td></tr>
-  </tbody></table>
-  <p>檔案未放好時會自動顯示虛線提示框（寫明缺哪個檔），不會出現破圖，可以放心先派給學生。<br>
-     若你的圖是 png／jpg 不一致，只需改 <code class="inline">ROBOTS</code> 內的 <code class="inline">img</code> 或 HTML 的 <code class="inline">src</code>。<br>
-     第 5 節 10 個部件圖已用 <b>SVG 畫在檔案內</b>，不需任何圖片檔，離線一定顯示。</p>
-
-  <h3>B. Google Drive 影片（已接好）</h3>
-<pre>video1 → 1FJHNPTfrtjKMGWVqamwlrLC3Ewh1rGth（搞笑片段剪輯）
-video2 → 1i5gbkzhbU8x-xQmlK-8BfT2VbyG8lmcp（最震撼精彩瞬間）</pre>
-  <p>本檔用 <code class="inline">https://drive.google.com/file/d/檔案ID/preview</code> 嵌入 iframe。<br>
-     <b>⚠️ 一定要做：</b>在 Drive 對兩個檔案按「共用」→ 一般存取權設為 <b>「知道連結的任何人」／檢視者</b>，否則學生會見到「需要存取權」。<br>
-     要換片只需改 <code class="inline">MEDIA</code> 內的 <code class="inline">id</code>。也支援 <code class="inline">type:"youtube"</code>（填 id）或 <code class="inline">type:"file"</code>（填本機 mp4 路徑）。<br>
-     每條影片下方都有「▸ 播不到？」摺疊區，內含 Drive 原連結及<b>「📂 由本機選擇影片檔」</b>按鈕（即場揀 mp4 播放，不受網絡／路徑影響），示範課最穩陣。</p>
-  <p><b>備用：</b>如果學校網絡封鎖 Drive，把 mp4 放入 <code class="inline">videos/</code> 並改為
-     <code class="inline">{ type:"file", src:"videos/v1.mp4" }</code>；若播不到多數是編碼問題（YouTube 下載檔常為 VP9／AV1，iPhone 為 HEVC），用 HandBrake 轉成 <b>H.264 + AAC</b> 即可。</p>
-
-  <h3>C. 練習 1 的提示機制</h3>
-  <p>只列出 5 句<b>中文</b>（次序正確）；學生按 💡 或按中文句子本身，才逐句顯示對應英文。提示<b>不扣分</b>，但用了幾次會記錄在成績單及繳交報告，方便你看難度。<br>
-     評分：第一次就排對 = 5 分；之後才排對 = 3 分；按過「顯示答案」= 0 分。</p>
-
-  <h3>D. 關於「夾公仔機」的答案</h3>
-  <p>本檔設定為<b>「不是機械人」</b>——方向和落爪都由玩家即時操控。想改為「是」，把 <code class="inline">ROBOTS</code> 中 <code class="inline">q8</code> 的 <code class="inline">ans:false</code> 改成 <code class="inline">true</code> 並修改 <code class="inline">why</code> 文字。</p>
-
-  <h3>E. 改分數</h3>
-<pre>const MAX = { s1:5, s2:9, s3:5, s4:4, s5:10, s6a:3, s6b:3, s6c:6 };</pre>
-  <p>總分會自動重算。轉彎記錄：填滿 2 行以上得滿分、1 行得一半。短答題每題需 15 字以上。</p>
-
-  <h3>F. 收功課</h3>
-  <p>學生輸出的 HTML 內含成績表、逐題記錄、兩題文字答案、計算結果、轉彎試驗表、檢查表及簽署欄，檔尾亦嵌入 <code class="inline">&lt;!-- DATA: {...} --&gt;</code> JSON 方便日後批量統計。建議課堂尾段老師巡視一次，確認學生真的按了輸出鍵。</p>
-</section>
-
 <footer>設計與科技科（DT）｜自動化與機械人 第一堂｜學生自學筆記 v3</footer>
 </main>
 
